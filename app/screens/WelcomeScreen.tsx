@@ -2,11 +2,11 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC,
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { Text, Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import {
+/* import {
   Text,
-} from "../components"
+} from "../components" */
 import { isRTL } from "../i18n"
 import { colors, spacing } from "../theme"
 
@@ -21,19 +21,14 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     <View style={$container}>
       <View style={$topContainer}>
         <Image style={$welcomeLogo} source={welcomeLogo} resizeMode="contain" />
-        <Text
-          testID="welcome-heading"
-          style={$welcomeHeading}
-          tx="welcomeScreen.readyForLaunch"
-          preset="heading"
-        />
-        <Text tx="welcomeScreen.exciting" preset="subheading" />
+        <Text className="text-2xl font-bold text-center text-red-700">Welcome to</Text>
+        
         <Image style={$welcomeFace} source={welcomeFace} resizeMode="contain" />
       </View>
 
       <SafeAreaView style={$bottomContainer} edges={["bottom"]}>
-        <View style={$bottomContentContainer}>
-          <Text tx="welcomeScreen.postscript" size="md" />
+        <View style={$bottomContentContainer} >
+          
         </View>
       </SafeAreaView>
     </View>
@@ -86,3 +81,5 @@ const $welcomeFace: ImageStyle = {
 const $welcomeHeading: TextStyle = {
   marginBottom: spacing.medium,
 }
+
+

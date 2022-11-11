@@ -6,6 +6,7 @@ const plugins = [
     },
   ],
   ["@babel/plugin-proposal-optional-catch-binding"],
+  "tailwindcss-react-native/babel",
   "react-native-reanimated/plugin", // NOTE: this must be last in the plugins
 ]
 
