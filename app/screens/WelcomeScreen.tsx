@@ -9,8 +9,10 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
-  ) {
+// REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
+// @ts-ignore
+export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> = observer(function WelcomeScreen(props) {
+  const { navigation } = props;
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
@@ -20,7 +22,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   const theme = useTheme();
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.tertiaryContainer,
     paddingHorizontal: 20,
   }
   
@@ -32,7 +34,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   
   const $loginContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.tertiaryContainer,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -48,19 +50,21 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.onPrimary}/>
+      <StatusBar backgroundColor={theme.colors.tertiaryContainer}/>
       <View style={$loginContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Login</Text>
-        <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}}/>
-        <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}}/>
-        <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'transparent'}}>Error en credenciales</Text>
-        <Button mode="contained" onPress={() => console.log('Pressed')} style={{marginVertical: 10}}>
-          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
+        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Home</Text>
+        <Button mode="contained" onPress={() => {
+          navigation.navigate("Doctor")
+          }} 
+          style={{marginVertical: 10}}>
+          Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color="white" />
         </Button>
-        <Button mode="contained" onPress={() => console.log('Pressed')} style={{marginVertical: 10}}>
-          Registrarse <MaterialCommunityIcons name="account-plus" size={16} color="white" />
+        <Button mode="contained" onPress={() => {
+          authStore.logout()
+          }} 
+          style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
+          Cerrar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
         </Button>
-
       </View>
       
 

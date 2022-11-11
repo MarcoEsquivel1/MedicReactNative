@@ -9,17 +9,19 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
+// import { useNavigation } from "@react-navigation/native"
+// import { useStores } from "../models"
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
-// - Add `Login: undefined` to AppStackParamList
+// - Add `Doctor: undefined` to AppStackParamList
 // - Import your screen, and add it to the stack:
-//     `<Stack.Screen name="Login" component={LoginScreen} />`
+//     `<Stack.Screen name="Doctor" component={DoctorScreen} />`
 // Hint: Look for the 🔥!
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = observer(function LoginScreen(props) {
+export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> = observer(function DoctorScreen(props) {
   const { navigation } = props;
   const { authStore } = useStores()
   const [username, setUsername] = useState("")
@@ -48,7 +50,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   const theme = useTheme();
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.tertiaryContainer,
     paddingHorizontal: 20,
   }
   
@@ -60,7 +62,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   
   const $loginContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.tertiaryContainer,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -106,23 +108,18 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.onPrimary}/>
+      <StatusBar backgroundColor={theme.colors.tertiaryContainer}/>
       <View style={$loginContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Login</Text>
-        <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
-        <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword}/>
+        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Perfil</Text>
+        <TextInput label="Nombre Doctor" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyUsername}/>
+        <TextInput label="Password" value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyPassword}/>
+        
         <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'blue'}}>{errorMessage}</Text>
         <Button mode="contained" onPress={() => {
-          handleLogin()
+          navigation.navigate("Welcome")
           }} 
           style={{marginVertical: 10}}>
-          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
-        </Button>
-        <Button mode="outlined" onPress={() => {
-          authStore.setErrorMessage("")
-          navigation.navigate("Register")
-          }} style={{marginVertical: 10}}>
-          Registrarse <MaterialCommunityIcons name="account-plus" size={16} color="white" />
+          Regresar <MaterialCommunityIcons name="home" size={16} color="white" />
         </Button>
 
       </View>

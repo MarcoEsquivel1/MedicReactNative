@@ -15,9 +15,13 @@ import { observer } from "mobx-react-lite"
 import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
+import { useStores } from "../models"
 import {
   WelcomeScreen,
 } from "../screens"
+import { DoctorScreen } from "../screens/DoctorScreen"
+import { LoginScreen } from "../screens/LoginScreen"
+import { RegisterScreen } from "../screens/RegisterScreen"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 /**
@@ -34,7 +38,10 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
 export type AppStackParamList = {
-  Welcome: undefined
+  Welcome: undefined,
+  Login: undefined,
+  Register: undefined,
+  Doctor: undefined,
   // 🔥 Your screens go here
 }
 
@@ -53,11 +60,25 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreen
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
+  const {authStore} = useStores()
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
+      initialRouteName={authStore.isAuthenticated ? "Welcome" : "Login"}
     >
+      {authStore.isAuthenticated ? (
+        <>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Doctor" component={DoctorScreen} />
+
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+        </>
+      )}
+      {/* @demo remove-block-end */}
       {/** 🔥 Your screens go here */}
     </Stack.Navigator>
   )

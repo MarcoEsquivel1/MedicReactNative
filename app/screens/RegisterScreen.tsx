@@ -10,22 +10,19 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
 
-// STOP! READ ME FIRST!
-// To fix the TS error below, you'll need to add the following things in your navigation config:
-// - Add `Login: undefined` to AppStackParamList
-// - Import your screen, and add it to the stack:
-//     `<Stack.Screen name="Login" component={LoginScreen} />`
-// Hint: Look for the 🔥!
-
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = observer(function LoginScreen(props) {
+export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register">> = observer(function RegisterScreen(props) {
   const { navigation } = props;
   const { authStore } = useStores()
   const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [password_confirmation, setPasswordConfirmation] = useState("")
   const [error, setError] = useState(false)
   const [emptyPassword, setEmptyPassword] = useState(false)
+  const [empityPasswordConfirmation, setEmptyPasswordConfirmation] = useState(false)
+  const [emptyEmail, setEmptyEmail] = useState(false)
   const [emptyUsername, setEmptyUsername] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -43,7 +40,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   useEffect(() => {
     setError(authStore.getIsError)
     setErrorMessage(authStore.getErrorMessage)
-  }, [authStore.isError, authStore.errorMessage]);
+  }, [authStore.isError , authStore.errorMessage]);
 
   const theme = useTheme();
   const $root: ViewStyle = {
@@ -58,7 +55,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     marginBottom: 50,
   }
   
-  const $loginContainer: ViewStyle = {
+  const $registerContainer: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.onPrimary,
     width: "100%",
@@ -66,11 +63,11 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     justifyContent: "center",   
   }
 
-  const $titleLogin: TextStyle = {
+  const $titleregister: TextStyle = {
     color: theme.colors.primary,
   }
 
-  function handleLogin() {
+  function handleregister() {
     if (username === "") {
       setEmptyUsername(true)
     }else{
@@ -81,14 +78,31 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     }else{
       setEmptyPassword(false)
     }
-    if (username !== "" && password !== "") {
+    if (password_confirmation === "") {
+      setEmptyPasswordConfirmation(true)
+    }else{
+      setEmptyPasswordConfirmation(false)
+    }
+    if (email === "") {
+      setEmptyEmail(true)
+    }else{
+      setEmptyEmail(false)
+    }
+    if (username !== "" && password !== "" && password_confirmation !== "" && email !== "") {
       setEmptyPassword(false)
       setEmptyUsername(false)
+      setEmptyEmail(false)
+      setEmptyPasswordConfirmation(false)
       authStore.setAuthUsername(username)
+      authStore.setAuthEmail(email)
       authStore.setAuthPassword(password)
+      authStore.setAuthPasswordConfirm(password_confirmation)
       setUsername("")
       setPassword("")
-      authStore.login()
+      setPasswordConfirmation("")
+      setEmail("")
+      authStore.register()
+      console.log("register")
     }
   } 
 
@@ -107,22 +121,24 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       contentContainerStyle={$screenContentContainer}
     >     
       <StatusBar backgroundColor={theme.colors.onPrimary}/>
-      <View style={$loginContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Login</Text>
-        <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
+      <View style={$registerContainer}>
+        <Text variant="displayLarge" className="text-center" style={$titleregister}>Crear cuenta</Text>
+        <TextInput label="Email" value={email} onChangeText={setEmail} mode="outlined" style={{marginVertical: 10}} error={emptyEmail}/>
+        <TextInput label="Username" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
         <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword}/>
+        <TextInput label="Password Confirmation" secureTextEntry value={password_confirmation} onChangeText={setPasswordConfirmation} mode="outlined" style={{marginVertical: 10}} error={empityPasswordConfirmation}/>
         <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'blue'}}>{errorMessage}</Text>
         <Button mode="contained" onPress={() => {
-          handleLogin()
+          handleregister()
           }} 
           style={{marginVertical: 10}}>
-          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
+          Crear cuenta <MaterialCommunityIcons name="account-plus" size={16} color="white" />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")
-          navigation.navigate("Register")
+          navigation.navigate("Login")
           }} style={{marginVertical: 10}}>
-          Registrarse <MaterialCommunityIcons name="account-plus" size={16} color="white" />
+          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
         </Button>
 
       </View>
