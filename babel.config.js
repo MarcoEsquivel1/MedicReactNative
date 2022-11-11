@@ -6,6 +6,7 @@ const plugins = [
     },
   ],
   ["@babel/plugin-proposal-optional-catch-binding"],
+  'react-native-paper/babel',
   "tailwindcss-react-native/babel",
   "react-native-reanimated/plugin", // NOTE: this must be last in the plugins
 ]
@@ -19,7 +20,7 @@ const vanillaConfig = {
 }
 
 const expoConfig = {
-  presets: ["babel-preset-expo"],
+  presets: ["module:metro-react-native-babel-preset", "babel-preset-expo"],
   env: {
     production: {},
   },

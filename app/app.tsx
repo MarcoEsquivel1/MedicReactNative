@@ -22,6 +22,7 @@ import { customFontsToLoad } from "./theme"
 import { setupReactotron } from "./services/reactotron"
 import Config from "./config"
 import { TailwindProvider } from 'tailwindcss-react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
 // React Native apps. Learn more here: https://github.com/infinitered/reactotron
 setupReactotron({
@@ -78,12 +79,14 @@ function App(props: AppProps) {
   return (
     <TailwindProvider>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <ErrorBoundary catchErrors={Config.catchErrors}>
-          <AppNavigator
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
-          />
-        </ErrorBoundary>
+        <PaperProvider>
+          <ErrorBoundary catchErrors={Config.catchErrors}>
+            <AppNavigator
+              initialState={initialNavigationState}
+              onStateChange={onNavigationStateChange}
+            />
+          </ErrorBoundary>
+        </PaperProvider>
       </SafeAreaProvider>
     </TailwindProvider>
   )
