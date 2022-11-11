@@ -138,7 +138,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
           authStore.setErrorMessage("")
           navigation.navigate("Login")
           }} style={{marginVertical: 10}}>
-          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
+          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.primary} />
         </Button>
 
       </View>

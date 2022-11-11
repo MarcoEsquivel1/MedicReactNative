@@ -48,4 +48,34 @@ export default class MedicApiService {
             return error.response;
         }
     }
+
+    static async getDoctor(token: string) {
+        try {
+            const response = await MedicAPI.get('/doctor', {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    static async updateDoctor(token: string, name: string, start_time: string, end_time: string) {
+        try {
+            const response = await MedicAPI.put('/doctor', {
+                name,
+                start_time,
+                end_time
+            }, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
 }

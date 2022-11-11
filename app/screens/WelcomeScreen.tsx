@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, {
-  FC, useState,
+  FC, useEffect, useState,
 } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -17,7 +17,8 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
 
-  const { authStore } = useStores()
+  const { authStore, doctorStore} = useStores()
+
 
   const theme = useTheme();
   const $root: ViewStyle = {
@@ -60,6 +61,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
           Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color="white" />
         </Button>
         <Button mode="contained" onPress={() => {
+          doctorStore.clearDoctor()
           authStore.logout()
           }} 
           style={{marginVertical: 10, backgroundColor: theme.colors.error}}>

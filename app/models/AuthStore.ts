@@ -55,6 +55,12 @@ export const AuthStoreModel = types
       const response = await MedicApiService.logout("Bearer " + self.authToken)
       if (response.status === 200) {
         this.setToken("")
+        this.setAuthEmail("")
+        this.setAuthUsername("")
+        this.setAuthPassword("")
+        this.setAuthPasswordConfirm("")
+        this.setErrorMessage("")
+        this.setIsError(false)
       }else{
         console.log(response.message)
       }
@@ -82,6 +88,7 @@ export const AuthStoreModel = types
       const response = await MedicApiService.register(self.authUsername, self.authEmail, self.authPassword, self.authPasswordConfirm);
       if (response.status === 200) {
         this.setErrorMessage(response.message);
+        this.setIsError(false);
       }else{
         this.setIsError(true);
         this.setErrorMessage(response.data.message);

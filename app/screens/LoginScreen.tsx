@@ -122,7 +122,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
           authStore.setErrorMessage("")
           navigation.navigate("Register")
           }} style={{marginVertical: 10}}>
-          Registrarse <MaterialCommunityIcons name="account-plus" size={16} color="white" />
+          Registrarse <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.primary} />
         </Button>
 
       </View>

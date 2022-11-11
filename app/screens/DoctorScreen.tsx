@@ -9,6 +9,7 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
+import { TimePickerModal } from 'react-native-paper-dates'
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
 
@@ -23,29 +24,86 @@ import { isLoading } from "expo-font"
 // @ts-ignore
 export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> = observer(function DoctorScreen(props) {
   const { navigation } = props;
-  const { authStore } = useStores()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const { authStore, doctorStore } = useStores()
+  const [doctor_Name, setDoctorName] = useState("")
+  const [start_time, setStartTime] = useState(null)
+  const [end_time, setEndTime] = useState(null)
   const [error, setError] = useState(false)
-  const [emptyPassword, setEmptyPassword] = useState(false)
-  const [emptyUsername, setEmptyUsername] = useState(false)
+  const [emptyStartTime, setEmptyStartTime] = useState(false)
+  const [emptyEndTime, setEmptyEndTime] = useState(false)
+  const [emptyDoctorName, setEmptyDoctorName] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
-  useEffect(() => {
-    setIsLoading(authStore.getIsLoading)
-  }, [authStore.isLoading]);
+  const [visible1, setVisible1] = useState(false)
+  const [visible2, setVisible2] = useState(false)
+
+  const onDismiss1 = React.useCallback(() => {
+    setVisible1(false)
+  }, [setVisible1])
+
+  const onConfirm1 = React.useCallback(
+    ({ hours, minutes }) => {
+      setVisible1(false);
+      //if minutes != 0
+      if(minutes >= 10 && hours >= 10){
+        setStartTime(`${hours}:${minutes}`)
+      }else if(minutes < 10 && hours >= 10){
+        setStartTime(`${hours}:0${minutes}`)
+      }else if(minutes >= 10 && hours < 10){
+        setStartTime(`0${hours}:${minutes}`)
+      }else{
+        setStartTime(`0${hours}:0${minutes}`)
+      }
+    },
+    [setVisible1]
+  );
+
+  const onDismiss2 = React.useCallback(() => {
+    setVisible2(false)
+  }, [setVisible2])
+
+  const onConfirm2 = React.useCallback(
+    ({ hours, minutes }) => {
+      setVisible2(false);
+      if(minutes >= 10 && hours >= 10){
+        setEndTime(`${hours}:${minutes}`)
+      }else if(minutes < 10 && hours >= 10){
+        setEndTime(`${hours}:0${minutes}`)
+      }else if(minutes >= 10 && hours < 10){
+        setEndTime(`0${hours}:${minutes}`)
+      }else{
+        setEndTime(`0${hours}:0${minutes}`)
+      }
+    },
+    [setVisible2]
+  );
 
   useEffect(() => {
-    authStore.setIsLoading(false)
-    authStore.setIsError(false)
-    authStore.setErrorMessage("")
+    setIsLoading(doctorStore.getIsLoading)
+  }, [doctorStore.isLoading]);
+
+  useEffect(() => {
+    doctorStore.setIsLoading(false)
+    doctorStore.setIsError(false)
+    doctorStore.setErrorMessage("")
+    const token = authStore.getAuthToken
+    doctorStore.getDoctor(token)
+    setDoctorName(doctorStore.getNombreDoctor)
+    setStartTime(doctorStore.getStartTime)
+    setEndTime(doctorStore.getEndTime)
   }, []);
+
+  useEffect(() => {
+    setDoctorName(doctorStore.getNombreDoctor)
+    setStartTime(doctorStore.getStartTime)
+    setEndTime(doctorStore.getEndTime)
+  }, [doctorStore.nombre_doctor, doctorStore.start_time, doctorStore.end_time]);
   
   useEffect(() => {
-    setError(authStore.getIsError)
-    setErrorMessage(authStore.getErrorMessage)
-  }, [authStore.isError, authStore.errorMessage]);
+    setError(doctorStore.getIsError)
+    setErrorMessage(doctorStore.getErrorMessage)
+  }, [doctorStore.isError, doctorStore.errorMessage]);
 
   const theme = useTheme();
   const $root: ViewStyle = {
@@ -72,25 +130,37 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
     color: theme.colors.primary,
   }
 
-  function handleLogin() {
-    if (username === "") {
-      setEmptyUsername(true)
-    }else{
-      setEmptyUsername(false)
+  function handleUpdate() {
+    if (doctor_Name === "") {
+      setEmptyDoctorName(true)
+    } else {
+      setEmptyDoctorName(false)
     }
-    if (password === "") {
-      setEmptyPassword(true)
-    }else{
-      setEmptyPassword(false)
+    if (start_time === null) {
+      setEmptyStartTime(true)
+    } else {
+      setEmptyStartTime(false)
     }
-    if (username !== "" && password !== "") {
-      setEmptyPassword(false)
-      setEmptyUsername(false)
-      authStore.setAuthUsername(username)
-      authStore.setAuthPassword(password)
-      setUsername("")
-      setPassword("")
-      authStore.login()
+    if (end_time === null) {
+      setEmptyEndTime(true)
+    } else {
+      setEmptyEndTime(false)
+    }
+    if (doctor_Name !== "" && start_time !== null && end_time !== null) {
+      setEmptyDoctorName(false)
+      setEmptyStartTime(false)
+      setEmptyEndTime(false)
+      
+      doctorStore.setNombreDoctor(doctor_Name)
+      doctorStore.setStartTime(start_time)
+      doctorStore.setEndTime(end_time)
+      const token = authStore.getAuthToken
+      doctorStore.updateDoctor(token)
+
+      setDoctorName("")
+      setStartTime(null)
+      setEndTime(null)
+      /* authStore.login() */
     }
   } 
 
@@ -107,18 +177,63 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
       preset="fixed"
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
-    >     
+    >   
+    <TimePickerModal
+        visible={visible1}
+        onDismiss={onDismiss1}
+        onConfirm={onConfirm1}
+        hours={9} // default: current hours
+        minutes={0} // default: current minutes
+        label="Hora de entrada" // optional, default 'Select time'
+        uppercase={false} // optional, default is true
+        cancelLabel="Cancel" // optional, default: 'Cancel'
+        confirmLabel="Ok" // optional, default: 'Ok'
+        animationType="fade" // optional, default is 'none'
+        locale="fr" // optional, default is automically detected by your system
+        // keyboardIcon="keyboard-outline" // optional, default is "keyboard-outline"
+        // clockIcon="clock-outline" // optional, default is "clock-outline"
+      /> 
+    <TimePickerModal
+        visible={visible2}
+        onDismiss={onDismiss2}
+        onConfirm={onConfirm2}
+        hours={16} // default: current hours
+        minutes={0} // default: current minutes
+        label="Hora de salida" // optional, default 'Select time'
+        uppercase={false} // optional, default is true
+        cancelLabel="Cancel" // optional, default: 'Cancel'
+        confirmLabel="Ok" // optional, default: 'Ok'
+        animationType="fade" // optional, default is 'none'
+        locale="fr" // optional, default is automically detected by your system
+        // keyboardIcon="keyboard-outline" // optional, default is "keyboard-outline"
+        // clockIcon="clock-outline" // optional, default is "clock-outline"
+      /> 
+
       <StatusBar backgroundColor={theme.colors.tertiaryContainer}/>
       <View style={$loginContainer}>
         <Text variant="displayLarge" className="text-center" style={$titleLogin}>Perfil</Text>
-        <TextInput label="Nombre Doctor" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyUsername}/>
-        <TextInput label="Password" value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyPassword}/>
+        <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyDoctorName}/>
         
+        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+          <TextInput label="Hora de entrada" value={start_time} onChangeText={setStartTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer, width: "75%"}} error={emptyStartTime} disabled/>
+          <Button mode="contained" onPress={() => setVisible1(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color="white" /></Button>
+        </View>
+        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+          <TextInput label="Hora de salida" value={end_time} onChangeText={setEndTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer, width: "75%"}} error={emptyEndTime} disabled/>
+          <Button mode="contained" onPress={() => setVisible2(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color="white" /></Button>
+        </View>
+
         <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'blue'}}>{errorMessage}</Text>
+        <Button mode="contained" onPress={() => {
+          handleUpdate()
+          }} 
+          style={{marginVertical: 10}}>
+          Actualizar <MaterialCommunityIcons name="upload" size={16} color="white" />
+        </Button>
         <Button mode="contained" onPress={() => {
           navigation.navigate("Welcome")
           }} 
-          style={{marginVertical: 10}}>
+          style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
           Regresar <MaterialCommunityIcons name="home" size={16} color="white" />
         </Button>
 
