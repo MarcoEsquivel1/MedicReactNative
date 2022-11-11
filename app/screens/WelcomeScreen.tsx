@@ -1,45 +1,21 @@
 import { observer } from "mobx-react-lite"
 import React, {
   FC,
-  useLayoutEffect, // @demo remove-current-line
 } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import {
-  Button, // @demo remove-current-line
-  Header, // @demo remove-current-line
   Text,
 } from "../components"
 import { isRTL } from "../i18n"
-import { useStores } from "../models" // @demo remove-current-line
-import { AppStackScreenProps } from "../navigators" // @demo remove-current-line
 import { colors, spacing } from "../theme"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
 
-interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {} // @demo remove-current-line
 
 export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
-  _props, // @demo remove-current-line
 ) {
-  // @demo remove-block-start
-  const { navigation } = _props
-  const {
-    authenticationStore: { logout },
-  } = useStores()
-
-  function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom" })
-  }
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      header: () => <Header rightTx="common.logOut" onRightPress={logout} />,
-    })
-  }, [])
-  // @demo remove-block-end
 
   return (
     <View style={$container}>
@@ -58,14 +34,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
       <SafeAreaView style={$bottomContainer} edges={["bottom"]}>
         <View style={$bottomContentContainer}>
           <Text tx="welcomeScreen.postscript" size="md" />
-          {/* @demo remove-block-start */}
-          <Button
-            testID="next-screen-button"
-            preset="reversed"
-            tx="welcomeScreen.letsGo"
-            onPress={goNext}
-          />
-          {/* @demo remove-block-end */}
         </View>
       </SafeAreaView>
     </View>
