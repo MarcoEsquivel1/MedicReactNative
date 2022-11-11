@@ -8,12 +8,16 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 export const AuthStoreModel = types
   .model("AuthStore")
   .props({
-    authToken: types.optional(types.string, ""),
+    authToken: types.maybe(types.string),
     authUsername: types.optional(types.string, ""), 
     authPassword: types.optional(types.string, ""),
   })
   .actions(withSetPropAction)
-  .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
+  .views((self) => ({
+    get isAuthenticated() {
+      return !!self.authToken
+    }
+  })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     setAuthUsername: (username: string) => {
       self.authUsername = username
