@@ -179,6 +179,8 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
       contentContainerStyle={$screenContentContainer}
     >   
     <TimePickerModal
+        clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color="black" />}
+        keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color="black" />}
         visible={visible1}
         onDismiss={onDismiss1}
         onConfirm={onConfirm1}
@@ -194,6 +196,8 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
         // clockIcon="clock-outline" // optional, default is "clock-outline"
       /> 
     <TimePickerModal
+        clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color="black" />}
+        keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color="black" />}
         visible={visible2}
         onDismiss={onDismiss2}
         onConfirm={onConfirm2}
