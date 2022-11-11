@@ -2,84 +2,49 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC,
 } from "react"
-import { Text, Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { Text, Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
+import { TextInput } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
-/* import {
-  Text,
-} from "../components" */
-import { isRTL } from "../i18n"
-import { colors, spacing } from "../theme"
-
-const welcomeLogo = require("../../assets/images/logo.png")
-const welcomeFace = require("../../assets/images/welcome-face.png")
+import { Screen } from "../components"
 
 
 export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
 ) {
 
   return (
-    <View style={$container}>
-      <View style={$topContainer}>
-        <Image style={$welcomeLogo} source={welcomeLogo} resizeMode="contain" />
-        <Text className="text-2xl font-bold text-center text-red-700">Welcome to</Text>
-        
-        <Image style={$welcomeFace} source={welcomeFace} resizeMode="contain" />
+    <Screen
+      style={$root}
+      preset="fixed"
+      safeAreaEdges={["top"]}
+      contentContainerStyle={$screenContentContainer}
+    >     
+      <StatusBar backgroundColor={"#3bb9e7"}/>
+      <View style={$loginContainer}>
+        <TextInput style={$loginInput} placeholder="Username" />
       </View>
+      
 
-      <SafeAreaView style={$bottomContainer} edges={["bottom"]}>
-        <View style={$bottomContentContainer} >
-          
-        </View>
-      </SafeAreaView>
-    </View>
+    </Screen>
   )
 })
 
-const $container: ViewStyle = {
+const $root: ViewStyle = {
   flex: 1,
-  backgroundColor: colors.background,
+  backgroundColor: "#3bb9e7",
 }
 
-const $topContainer: ViewStyle = {
-  flexShrink: 1,
-  flexGrow: 1,
-  flexBasis: "57%",
-  justifyContent: "center",
-  paddingHorizontal: spacing.large,
-}
-
-const $bottomContainer: ViewStyle = {
-  flexShrink: 1,
-  flexGrow: 0,
-  flexBasis: "43%",
-  backgroundColor: colors.palette.neutral100,
-  borderTopLeftRadius: 16,
-  borderTopRightRadius: 16,
-}
-
-const $bottomContentContainer: ViewStyle = {
+const $screenContentContainer: ViewStyle = {
   flex: 1,
-  paddingHorizontal: spacing.large,
-  justifyContent: "space-around",
+  backgroundColor: "black",
 }
 
-const $welcomeLogo: ImageStyle = {
-  height: 88,
+const $loginContainer: ViewStyle = {
+  flex: 1,
+  backgroundColor: "#3bb9e7",
   width: "100%",
-  marginBottom: spacing.huge,
+  height: "100%",
 }
 
-const $welcomeFace: ImageStyle = {
-  height: 169,
-  width: 269,
-  position: "absolute",
-  bottom: -47,
-  right: -80,
-  transform: [{ scaleX: isRTL ? -1 : 1 }],
+const $loginInput: ViewStyle = {
+  backgroundColor: "white",
 }
-
-const $welcomeHeading: TextStyle = {
-  marginBottom: spacing.medium,
-}
-
-
