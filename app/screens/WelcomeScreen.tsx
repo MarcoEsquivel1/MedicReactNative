@@ -23,7 +23,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   const theme = useTheme();
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.tertiaryContainer,
+    backgroundColor: theme.colors.primaryContainer,
     paddingHorizontal: 20,
   }
   
@@ -35,7 +35,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   
   const $loginContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.tertiaryContainer,
+    backgroundColor: theme.colors.primaryContainer,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -51,7 +51,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.tertiaryContainer}/>
+      <StatusBar backgroundColor={theme.colors.primaryContainer}/>
       <View style={$loginContainer}>
         <Text variant="displayLarge" className="text-center" style={$titleLogin}>Home</Text>
         <Button mode="contained" onPress={() => {
@@ -59,6 +59,12 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
           }} 
           style={{marginVertical: 10}}>
           Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color="white" />
+        </Button>
+        <Button mode="contained" onPress={() => {
+          /* navigation.navigate("Patient") */
+          }}
+          style={{marginVertical: 10, backgroundColor: theme.colors.secondary}}>
+          Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color="white" />
         </Button>
         <Button mode="contained" onPress={() => {
           doctorStore.clearDoctor()

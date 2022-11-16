@@ -115,7 +115,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
   const theme = useTheme();
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.tertiaryContainer,
+    backgroundColor: theme.colors.primaryContainer,
     paddingHorizontal: 20,
   }
   
@@ -127,7 +127,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
   
   const $mainContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.tertiaryContainer,
+    backgroundColor: theme.colors.primaryContainer,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -173,7 +173,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
 
   if(isLoading){
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.tertiaryContainer}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.primaryContainer}}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -221,17 +221,17 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
         // clockIcon="clock-outline" // optional, default is "clock-outline"
       /> 
 
-      <StatusBar backgroundColor={theme.colors.tertiaryContainer}/>
+      <StatusBar backgroundColor={theme.colors.primaryContainer}/>
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Perfil</Text>
-        <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyDoctorName}/>
+        <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.primaryContainer}} error={emptyDoctorName}/>
         
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-          <TextInput label="Hora de entrada" value={start_time} onChangeText={setStartTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer, width: "75%"}} error={emptyStartTime} disabled/>
+          <TextInput label="Hora de entrada" value={start_time} onChangeText={setStartTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.primaryContainer, width: "75%"}} error={emptyStartTime} disabled/>
           <Button mode="contained" onPress={() => setVisible1(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color="white" /></Button>
         </View>
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-          <TextInput label="Hora de salida" value={end_time} onChangeText={setEndTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer, width: "75%"}} error={emptyEndTime} disabled/>
+          <TextInput label="Hora de salida" value={end_time} onChangeText={setEndTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.primaryContainer, width: "75%"}} error={emptyEndTime} disabled/>
           <Button mode="contained" onPress={() => setVisible2(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color="white" /></Button>
         </View>
 
