@@ -2,10 +2,10 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC, useEffect, useState,
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "../components"
-import { Button, Text, TextInput, useTheme } from "react-native-paper"
+import { ActivityIndicator, Button, MD2Colors, Text, TextInput, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
@@ -29,6 +29,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   const [emptyUsername, setEmptyUsername] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [isSecureTextEntry, setIsSecureTextEntry] = useState(true)
 
   useEffect(() => {
     setIsLoading(authStore.getIsLoading)
@@ -45,6 +46,22 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     setErrorMessage(authStore.getErrorMessage)
   }, [authStore.isError, authStore.errorMessage]);
 
+  const iconpassword = () => {
+    if (isSecureTextEntry) {
+      return (
+        <MaterialCommunityIcons name="eye" size={24} color="black" />
+      )
+    } else {
+      return (
+        <MaterialCommunityIcons name="eye-off" size={24} color="black" />
+      )
+    }
+  }
+
+  const hadleSecureTextEntry = () => {
+    setIsSecureTextEntry(!isSecureTextEntry)
+  }
+
   const theme = useTheme();
   const $root: ViewStyle = {
     flex: 1,
@@ -58,7 +75,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     marginBottom: 50,
   }
   
-  const $loginContainer: ViewStyle = {
+  const $mainContainer: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.onPrimary,
     width: "100%",
@@ -66,7 +83,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     justifyContent: "center",   
   }
 
-  const $titleLogin: TextStyle = {
+  const $mainTitle: TextStyle = {
     color: theme.colors.primary,
   }
 
@@ -94,7 +111,8 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
 
   if(isLoading){
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center' , backgroundColor: theme.colors.onPrimary}}>
+        <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
     )
@@ -107,10 +125,10 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       contentContainerStyle={$screenContentContainer}
     >     
       <StatusBar backgroundColor={theme.colors.onPrimary}/>
-      <View style={$loginContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Login</Text>
+      <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
+        <Text variant="displayLarge" className="text-center" style={$mainTitle}>Login</Text>
         <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
-        <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword}/>
+        <TextInput label="Password" secureTextEntry={isSecureTextEntry} value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword} right={<TextInput.Icon icon={iconpassword} onPress={hadleSecureTextEntry}/>}/>
         <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'blue'}}>{errorMessage}</Text>
         <Button mode="contained" onPress={() => {
           handleLogin()
@@ -125,7 +143,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
           Registrarse <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.primary} />
         </Button>
 
-      </View>
+      </KeyboardAvoidingView>
       
 
     </Screen>

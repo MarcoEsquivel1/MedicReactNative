@@ -2,10 +2,10 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC, useEffect, useState,
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "../components"
-import { Button, Text, TextInput, useTheme } from "react-native-paper"
+import { ActivityIndicator, Button, MD2Colors, Text, TextInput, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
@@ -26,7 +26,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
   const [emptyUsername, setEmptyUsername] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-
+  
   useEffect(() => {
     setIsLoading(authStore.getIsLoading)
   }, [authStore.isLoading]);
@@ -55,7 +55,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
     marginBottom: 50,
   }
   
-  const $registerContainer: ViewStyle = {
+  const $mainContainer: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.onPrimary,
     width: "100%",
@@ -63,7 +63,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
     justifyContent: "center",   
   }
 
-  const $titleregister: TextStyle = {
+  const $mainTitle: TextStyle = {
     color: theme.colors.primary,
   }
 
@@ -109,6 +109,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
   if(isLoading){
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
     )
@@ -121,8 +122,8 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
       contentContainerStyle={$screenContentContainer}
     >     
       <StatusBar backgroundColor={theme.colors.onPrimary}/>
-      <View style={$registerContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleregister}>Crear cuenta</Text>
+      <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
+        <Text variant="displayLarge" className="text-center" style={$mainTitle}>Crear cuenta</Text>
         <TextInput label="Email" value={email} onChangeText={setEmail} mode="outlined" style={{marginVertical: 10}} error={emptyEmail}/>
         <TextInput label="Username" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
         <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword}/>
@@ -141,7 +142,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
           Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.primary} />
         </Button>
 
-      </View>
+      </KeyboardAvoidingView>
       
 
     </Screen>

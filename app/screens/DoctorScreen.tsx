@@ -2,10 +2,10 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC, useEffect, useState,
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "../components"
-import { Button, Text, TextInput, useTheme } from "react-native-paper"
+import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
@@ -38,6 +38,9 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
   const [visible1, setVisible1] = useState(false)
   const [visible2, setVisible2] = useState(false)
 
+  //get dimensions of the screen
+  const { width, height } = useWindowDimensions()
+
   const onDismiss1 = React.useCallback(() => {
     setVisible1(false)
   }, [setVisible1])
@@ -58,6 +61,10 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
     },
     [setVisible1]
   );
+
+  useEffect(() => {
+    setIsLoading(doctorStore.getIsLoading)
+  }, [doctorStore.isLoading])
 
   const onDismiss2 = React.useCallback(() => {
     setVisible2(false)
@@ -118,7 +125,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
     marginBottom: 50,
   }
   
-  const $loginContainer: ViewStyle = {
+  const $mainContainer: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.tertiaryContainer,
     width: "100%",
@@ -126,7 +133,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
     justifyContent: "center",   
   }
 
-  const $titleLogin: TextStyle = {
+  const $mainTitle: TextStyle = {
     color: theme.colors.primary,
   }
 
@@ -166,7 +173,8 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
 
   if(isLoading){
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.tertiaryContainer}}>
+        <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
     )
@@ -214,8 +222,8 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
       /> 
 
       <StatusBar backgroundColor={theme.colors.tertiaryContainer}/>
-      <View style={$loginContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Perfil</Text>
+      <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
+        <Text variant="displayLarge" className="text-center" style={$mainTitle}>Perfil</Text>
         <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.tertiaryContainer}} error={emptyDoctorName}/>
         
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
@@ -241,7 +249,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
           Regresar <MaterialCommunityIcons name="home" size={16} color="white" />
         </Button>
 
-      </View>
+      </KeyboardAvoidingView>
       
 
     </Screen>

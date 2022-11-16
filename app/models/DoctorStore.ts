@@ -64,6 +64,7 @@ export const DoctorStoreModel = types
       this.setIsError(false)
     },
     async getDoctor(token: string) {
+      this.setIsLoading(true)
       const response = await MedicApiService.getDoctor("Bearer " + token)
       if (response.status === 200) {
         this.setNombreDoctor(response.data.name)
@@ -73,8 +74,13 @@ export const DoctorStoreModel = types
       }else{
         this.setErrorMessage(response.data.message)
       }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
     },
     async updateDoctor(token: string) {
+      this.setIsLoading(true)
       const response = await MedicApiService.updateDoctor("Bearer " + token, self.nombre_doctor, self.start_time, self.end_time)
       if (response.status === 200) {
         this.setErrorMessage(response.message)
@@ -84,6 +90,10 @@ export const DoctorStoreModel = types
       }else{
         this.setErrorMessage(response.data.message)
       }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
     },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 

@@ -75,6 +75,7 @@ export const AuthStoreModel = types
       self.errorMessage = errorMessage
     },
     async login() {
+      this.setIsLoading(true)
       const response = await MedicApiService.login(self.authUsername, self.authPassword);
       if (response.status === 200) {
         console.log(response.data.access_token);
@@ -83,8 +84,13 @@ export const AuthStoreModel = types
         this.setIsError(true);
         this.setErrorMessage(response.data.message);
       }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
     },
     async register() {
+      this.setIsLoading(true)
       const response = await MedicApiService.register(self.authUsername, self.authEmail, self.authPassword, self.authPasswordConfirm);
       if (response.status === 200) {
         this.setErrorMessage(response.message);
@@ -93,6 +99,10 @@ export const AuthStoreModel = types
         this.setIsError(true);
         this.setErrorMessage(response.data.message);
       }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
