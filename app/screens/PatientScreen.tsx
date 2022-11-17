@@ -4,12 +4,36 @@ import React, {
 } from "react"
 import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView, TouchableOpacity, } from "react-native"
 import { Screen } from "../components"
-import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton } from "react-native-paper"
+import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton, Modal, Portal } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
-import { TimePickerModal } from 'react-native-paper-dates'
+import { DatePickerInput, TimePickerModal } from 'react-native-paper-dates'
 import { AppContext } from '../context/AppContextProvider.js'
-
+import { PatientCard } from "../components/PatientCard"
+import { FlatList } from "react-native-gesture-handler"
+import { Patient } from "../models/Patient"
+import { DatePickerModal } from 'react-native-paper-dates';
+import {
+  registerTranslation,
+} from 'react-native-paper-dates'
+registerTranslation("custom", {
+  save: 'Save',
+  selectSingle: 'Select date',
+  selectMultiple: 'Select dates',
+  selectRange: 'Select period',
+  notAccordingToDateFormat: (inputFormat) =>
+    `Date format must be ${inputFormat}`,
+  mustBeHigherThan: (date) => `Must be later then ${date}`,
+  mustBeLowerThan: (date) => `Must be earlier then ${date}`,
+  mustBeBetween: (startDate, endDate) =>
+    `Must be between ${startDate} - ${endDate}`,
+  dateIsDisabled: 'Day is not allowed',
+  previous: 'Previous',
+  next: 'Next',
+  typeInDate: 'Type in date',
+  pickDateFromCalendar: 'Pick date from calendar',
+  close: 'Close',
+})
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
@@ -19,10 +43,37 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [error, setError] = useState(false)
+  const [name, setName] = useState("")
+  const [emptyName, setEmptyName] = useState(false)
+  const [DNI, setDNI] = useState("")
+  const [emptyDNI, setEmptyDNI] = useState(false)
+  const [tel, setTel] = useState("")
+  const [emptyTel, setEmptyTel] = useState(false)
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [open, setOpen] = React.useState(false);
+  const [inputDate, setInputDate] = React.useState<Date | undefined>(undefined)
 
-  const handleThemeChange = () => {
-    themeStore.toggleTheme()
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+
+  const handleAdd = () => {
+    showModal()
   }
+
+  const onDismissSingle = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const onConfirmSingle = React.useCallback(
+    (params) => {
+      setOpen(false);
+      setDate(params.date);
+    },
+    [setOpen, setDate]
+  );
+
 
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
@@ -63,41 +114,30 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     width: "100%",
     height: "100%",
     justifyContent: "flex-start",  
-    paddingTop: 20, 
+    paddingTop: 5, 
   }
 
   const $mainTitle: TextStyle = {
     color: theme.colors.onBackground,
-    marginBottom: 10,
+    marginBottom: 20,
   } 
 
-  const $card: ViewStyle = {
-    backgroundColor: theme.colors.primaryContainer,
-    borderRadius: 20,
-    padding: 10,
-  }
+  const $modalStyle = {
+    backgroundColor: theme.colors.background,
+    padding: 20, 
+    zIndex: 100,
+    marginHorizontal: 20,
+    borderRadius: 5,
+  };
 
-  const $cardText: TextStyle = {
-    color: theme.colors.surface,
-  }
-
-  const $deleteButton: ViewStyle = {
+  const $closeButton: ViewStyle = {
     backgroundColor: theme.colors.errorContainer,
-    borderRadius: 20,
-    borderBottomEndRadius: 0,
-    borderTopStartRadius: 0,
+    borderRadius: 5,
     padding: 5,
-    width: 75,
     alignItems: "center",
     justifyContent: "center",
-  }
-
-  const $horasItem: ViewStyle = {
-    backgroundColor: theme.colors.errorContainer,
-    marginVertical: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
   }
 
   if(isLoading){
@@ -118,38 +158,54 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     >
       <StatusBar backgroundColor={theme.colors.background}/>
       <View style={$mainContainer}>
-        <View style={{position: "absolute", top: 0, right: 0, padding: 5}}>
-          <ToggleButton
-            icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.background} />}
-            value="theme"
-            style={{backgroundColor: theme.colors.primaryContainer, zIndex: 100}}
-            onPress={handleThemeChange}
-          />
-        </View>
-        <Text variant="displayLarge" className="text-center font-bold" style={$mainTitle}>Pacientes</Text>
-        <View style={$card}>
-          <View style={{position: "absolute", top: 0, right: 0, padding: 0}}>
-            <TouchableOpacity onPress={() => {}} style={$deleteButton}>
-              <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
+      <Portal>
+        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={$modalStyle}>
+          <View style={{position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100}}>
+            <TouchableOpacity onPress={hideModal} style={$closeButton}>
+              <MaterialCommunityIcons name="close" size={34} color={theme.colors.surface} />
             </TouchableOpacity>
           </View>
-          <View className="w-9/12">
-            <Text variant="headlineSmall" style={$cardText}>Nombre del paciente </Text>
-          </View>
-          <View className="flex flex-row justify-between">
-            <View className="w-1/2 items-center justify-center">
-              <MaterialCommunityIcons name="account-outline" size={120} color={$cardText.color} />
-            </View>
-            <View className="w-1/2 items-center justify-center">
-              <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>Check-in: 08:00 </Text>
-              </View>
-              <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>Check-out: 14:00</Text>
-              </View>
-            </View>
-          </View>
+          <KeyboardAvoidingView behavior={'height'} enabled>
+            <Text variant="headlineMedium" className="mb-3">Agregar Paciente</Text>
+            <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{marginVertical: 10}} error={emptyName}/>
+            <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{marginVertical: 10}} error={emptyDNI}/>
+            <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{marginVertical: 10}} error={emptyTel}/>
+            <DatePickerInput
+              locale="custom"
+              label="Birthdate"
+              value={inputDate}
+              mode="outlined"
+              onChange={(d) => setInputDate(d)}
+              inputMode="start"
+              calendarIcon={() => <MaterialCommunityIcons name="calendar" size={24} color={theme.colors.primary} />}
+              editIcon={() => <MaterialCommunityIcons name="pencil" size={24} color={theme.colors.primary} />}
+              // other react native TextInput props
+              
+            />
+          </KeyboardAvoidingView>
+        </Modal>
+      </Portal>
+        <View style={{position: "absolute", top: 0, right: 0, padding: 5}}>
+          <ToggleButton
+            icon={() => <MaterialCommunityIcons name="plus" size={24} color={theme.colors.background} />}
+            value="theme"
+            style={{backgroundColor: theme.colors.primaryContainer, zIndex: 100, marginTop: 5}}
+            onPress={handleAdd}
+          />
         </View>
+        <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Pacientes</Text>
+        
+        <FlatList<Patient>
+          style={{flex: 1, width: "100%"}}
+          data={doctorStore.getPatientsList}
+          contentContainerStyle={{paddingBottom: 20}}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({item}) => (
+            <View style={{flex: 1, width: "100%", marginBottom: 15}}>
+              <PatientCard patient={item} />
+            </View>
+          )}
+        />
       </View>
 
     </Screen>

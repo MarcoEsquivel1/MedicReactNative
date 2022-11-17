@@ -38,6 +38,9 @@ export const DoctorStoreModel = types
     },
     get getEndTime() {
       return self.end_time
+    },
+    get getPatientsList() {
+      return self.patientsList
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
@@ -75,7 +78,13 @@ export const DoctorStoreModel = types
         this.setEndTime(response.data.end_time)
         this.setErrorMessage(response.message)
       }else{
-        this.setErrorMessage(response.data.message)
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
       }
       //delay
       setTimeout(() => {
@@ -91,7 +100,13 @@ export const DoctorStoreModel = types
         this.setStartTime(response.data.start_time)
         this.setEndTime(response.data.end_time)
       }else{
-        this.setErrorMessage(response.data.message)
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
       }
       //delay
       setTimeout(() => {
@@ -108,7 +123,13 @@ export const DoctorStoreModel = types
         self.setProp("patientsList", mappedPatients)
         
       }else{
-        this.setErrorMessage(response.data.message)
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
       }
       //delay
       setTimeout(() => {

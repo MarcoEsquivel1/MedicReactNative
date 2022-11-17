@@ -81,8 +81,13 @@ export const AuthStoreModel = types
         console.log(response.data.access_token);
         this.setToken(response.data.access_token);
       }else{
-        this.setIsError(true);
-        this.setErrorMessage(response.data.message);
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
       }
       //delay
       setTimeout(() => {
@@ -96,8 +101,13 @@ export const AuthStoreModel = types
         this.setErrorMessage(response.message);
         this.setIsError(false);
       }else{
-        this.setIsError(true);
-        this.setErrorMessage(response.data.message);
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
       }
       //delay
       setTimeout(() => {
