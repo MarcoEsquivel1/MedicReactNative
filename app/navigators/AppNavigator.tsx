@@ -12,7 +12,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { StackScreenProps } from "@react-navigation/stack"
 import { observer } from "mobx-react-lite"
-import React from "react"
+import React, { useEffect } from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 import { useStores } from "../models"
@@ -23,7 +23,7 @@ import { DoctorScreen } from "../screens/DoctorScreen"
 import { LoginScreen } from "../screens/LoginScreen"
 import { RegisterScreen } from "../screens/RegisterScreen"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
-
+import {AppContextProvider} from "../context/AppContextProvider.js"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -88,17 +88,29 @@ interface NavigationProps extends Partial<React.ComponentProps<typeof Navigation
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const { themeStore } = useStores()
-  const colorScheme = themeStore.themeColor
+  const colorScheme = useColorScheme()
+
+  useEffect(() => {
+    if (colorScheme === "dark") {
+      themeStore.setDarkTheme()
+    } else {
+      themeStore.setLightTheme()
+    }
+  }, [colorScheme])
+
+
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-      {...props}
-    >
-      <AppStack />
-    </NavigationContainer>
+    <AppContextProvider>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        {...props}
+      >
+        <AppStack />
+      </NavigationContainer>
+    </AppContextProvider>
   )
 })

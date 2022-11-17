@@ -36,6 +36,14 @@ export const ThemeStoreModel = types
         self.themeColor = "light"
         self.theme = themeLight
       }
+    },
+    setDarkTheme() {
+      self.themeColor = "dark"
+      self.theme = themeDark
+    },
+    setLightTheme() {
+      self.themeColor = "light"
+      self.theme = themeLight
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 

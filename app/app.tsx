@@ -83,14 +83,14 @@ function App(props: AppProps) {
   return (
     <TailwindProvider>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <AppContextProvider>
+        {/* <AppContextProvider> */}
           <ErrorBoundary catchErrors={Config.catchErrors}>
             <AppNavigator
               initialState={initialNavigationState}
               onStateChange={onNavigationStateChange}
             />
           </ErrorBoundary>
-        </AppContextProvider>
+        {/* </AppContextProvider> */}
       </SafeAreaProvider>
     </TailwindProvider>
   )
