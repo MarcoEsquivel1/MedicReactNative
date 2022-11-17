@@ -20,7 +20,6 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   }
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
-
   useEffect(() => {
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
@@ -73,7 +72,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
           Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="contained" onPress={() => {
-          /* navigation.navigate("Patient") */
+          navigation.navigate("Patient")
           }}
           style={{marginVertical: 10, backgroundColor: theme.colors.secondary}}>
           Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color={theme.colors.background} />

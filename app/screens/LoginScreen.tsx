@@ -9,13 +9,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { AppContext } from '../context/AppContextProvider.js'
 
-// STOP! READ ME FIRST!
-// To fix the TS error below, you'll need to add the following things in your navigation config:
-// - Add `Login: undefined` to AppStackParamList
-// - Import your screen, and add it to the stack:
-//     `<Stack.Screen name="Login" component={LoginScreen} />`
-// Hint: Look for the 🔥!
-
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
 export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = observer(function LoginScreen(props) {
@@ -83,7 +76,10 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     setIsSecureTextEntry(!isSecureTextEntry)
   }
   // @ts-ignore
-  const { theme } = useContext(AppContext)
+  const { theme, setTheme } = useContext(AppContext)
+  useEffect(() => {
+    setTheme(themeStore.getTheme)
+  }, [themeStore.theme]);
 
 
   const $root: ViewStyle = {

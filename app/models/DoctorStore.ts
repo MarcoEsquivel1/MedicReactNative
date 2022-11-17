@@ -1,7 +1,9 @@
 import { th } from "date-fns/locale"
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import MedicApiService from "../services/MedicAPI"
+import { mapPatient } from "../utils/mapping"
 import { withSetPropAction } from "./helpers/withSetPropAction"
+import { PatientModel } from "./Patient"
 
 /**
  * Model description here for TypeScript hints.
@@ -15,6 +17,7 @@ export const DoctorStoreModel = types
     nombre_doctor: types.optional(types.string, ""),
     start_time: types.optional(types.string, ""),
     end_time: types.optional(types.string, ""),
+    patientsList: types.optional(types.array(PatientModel), []),
   })
   .actions(withSetPropAction)
   .views((self) => ({
@@ -95,6 +98,23 @@ export const DoctorStoreModel = types
         this.setIsLoading(false)
       }, 500)
     },
+    async getPatients(token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.getPatients("Bearer " + token)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        const patients = response.data        
+        const mappedPatients = patients.map(mapPatient)
+        self.setProp("patientsList", mappedPatients)
+        
+      }else{
+        this.setErrorMessage(response.data.message)
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface DoctorStore extends Instance<typeof DoctorStoreModel> {}
