@@ -74,7 +74,8 @@
     "reactotron-mst": "3.1.4",
     "reactotron-react-js": "^3.3.7",
     "reactotron-react-native": "5.0.3",
-    "tailwindcss-react-native": "^1.7.10"
+    "tailwindcss-react-native": "^1.7.10",
+    "@types/react": "17.0.43"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
@@ -131,7 +132,7 @@
     "webpack-dev-server": "^3"
   },
   "resolutions": {
-    "@types/react": "^17",
+    "@types/react": "17.0.43",
     "@types/react-dom": "^17"
   },
   "prettier": {

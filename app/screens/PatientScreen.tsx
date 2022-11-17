@@ -14,26 +14,20 @@ import { FlatList } from "react-native-gesture-handler"
 import { Patient } from "../models/Patient"
 import { DatePickerModal } from 'react-native-paper-dates';
 import {
+  en,
+  nl,
+  de,
+  pl,
+  pt,
+  enGB,
   registerTranslation,
 } from 'react-native-paper-dates'
-registerTranslation("custom", {
-  save: 'Save',
-  selectSingle: 'Select date',
-  selectMultiple: 'Select dates',
-  selectRange: 'Select period',
-  notAccordingToDateFormat: (inputFormat) =>
-    `Date format must be ${inputFormat}`,
-  mustBeHigherThan: (date) => `Must be later then ${date}`,
-  mustBeLowerThan: (date) => `Must be earlier then ${date}`,
-  mustBeBetween: (startDate, endDate) =>
-    `Must be between ${startDate} - ${endDate}`,
-  dateIsDisabled: 'Day is not allowed',
-  previous: 'Previous',
-  next: 'Next',
-  typeInDate: 'Type in date',
-  pickDateFromCalendar: 'Pick date from calendar',
-  close: 'Close',
-})
+registerTranslation('en', en)
+registerTranslation('nl', nl)
+registerTranslation('pl', pl)
+registerTranslation('pt', pt)
+registerTranslation('de', de)
+registerTranslation('en-GB', enGB)
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
@@ -49,9 +43,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   const [emptyDNI, setEmptyDNI] = useState(false)
   const [tel, setTel] = useState("")
   const [emptyTel, setEmptyTel] = useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
-  const [open, setOpen] = React.useState(false);
-  const [inputDate, setInputDate] = React.useState<Date | undefined>(undefined)
+  const [inputDate, setInputDate] = React.useState(new Date('2020-01-01T00:00:00.000Z'));
 
   const [visible, setVisible] = React.useState(false);
 
@@ -61,19 +53,6 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   const handleAdd = () => {
     showModal()
   }
-
-  const onDismissSingle = React.useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const onConfirmSingle = React.useCallback(
-    (params) => {
-      setOpen(false);
-      setDate(params.date);
-    },
-    [setOpen, setDate]
-  );
-
 
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
@@ -171,14 +150,13 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
             <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{marginVertical: 10}} error={emptyDNI}/>
             <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{marginVertical: 10}} error={emptyTel}/>
             <DatePickerInput
-              locale="custom"
+              locale="sv"
               label="Birthdate"
               value={inputDate}
               mode="outlined"
               onChange={(d) => setInputDate(d)}
               inputMode="start"
-              calendarIcon={() => <MaterialCommunityIcons name="calendar" size={24} color={theme.colors.primary} />}
-              editIcon={() => <MaterialCommunityIcons name="pencil" size={24} color={theme.colors.primary} />}
+              withModal={false}
               // other react native TextInput props
               
             />
