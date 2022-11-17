@@ -61,7 +61,6 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
       setPasswordConfirmation("")
       setEmail("")
       authStore.register()
-      console.log("register")
     }
   } 
   

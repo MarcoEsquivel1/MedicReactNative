@@ -9,8 +9,8 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from "@react-navigation/native"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { StackScreenProps } from "@react-navigation/stack"
+import { createStackNavigator } from "@react-navigation/stack"
+import { StackScreenProps, TransitionPresets } from "@react-navigation/stack"
 import { observer } from "mobx-react-lite"
 import React, { useEffect } from "react"
 import { useColorScheme } from "react-native"
@@ -57,14 +57,17 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreen
 >
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
-const Stack = createNativeStackNavigator<AppStackParamList>()
+const Stack = createStackNavigator<AppStackParamList>()
+
+
 
 const AppStack = observer(function AppStack() {
   const {authStore} = useStores()
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, ...TransitionPresets.ModalPresentationIOS, gestureEnabled: true }}
       initialRouteName={authStore.isAuthenticated ? "Welcome" : "Login"}
+      
     >
       {authStore.isAuthenticated ? (
         <>
