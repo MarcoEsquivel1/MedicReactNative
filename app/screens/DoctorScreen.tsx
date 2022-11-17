@@ -152,7 +152,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
 
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
   
@@ -174,7 +174,7 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
 
   if(isLoading){
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.onPrimary}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background}}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -226,26 +226,26 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
         // clockIcon="clock-outline" // optional, default is "clock-outline"
       /> 
 
-      <StatusBar backgroundColor={theme.colors.onPrimary}/>
+      <StatusBar backgroundColor={theme.colors.background}/>
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
       <View style={{position: "absolute", top: 0, right: 0, padding: 10}}>
         <ToggleButton
-          icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.onPrimary} />}
+          icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.background} />}
           value="theme"
           style={{backgroundColor: theme.colors.primary}}
           onPress={handleThemeChange}
         />
         </View>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Perfil</Text>
-        <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.onPrimary}} error={emptyDoctorName}/>
+        <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.background}} error={emptyDoctorName}/>
         
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-          <TextInput label="Hora de entrada" value={start_time} onChangeText={setStartTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.onPrimary, width: "75%"}} error={emptyStartTime} disabled/>
-          <Button mode="contained" onPress={() => setVisible1(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color= {theme.colors.onPrimary} /></Button>
+          <TextInput label="Hora de entrada" value={start_time} onChangeText={setStartTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.background, width: "75%"}} error={emptyStartTime} disabled/>
+          <Button mode="contained" onPress={() => setVisible1(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color= {theme.colors.background} /></Button>
         </View>
         <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-          <TextInput label="Hora de salida" value={end_time} onChangeText={setEndTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.onPrimary, width: "75%"}} error={emptyEndTime} disabled/>
-          <Button mode="contained" onPress={() => setVisible2(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color= {theme.colors.onPrimary} /></Button>
+          <TextInput label="Hora de salida" value={end_time} onChangeText={setEndTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.background, width: "75%"}} error={emptyEndTime} disabled/>
+          <Button mode="contained" onPress={() => setVisible2(true)} style={{width: "20%"}}><MaterialCommunityIcons name="clock-outline" size={20} color= {theme.colors.background} /></Button>
         </View>
 
         <Text variant="labelLarge" className="text-left my-1" style={{color: error ? theme.colors.error : theme.colors.primary}}>{errorMessage}</Text>
@@ -253,13 +253,13 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
           handleUpdate()
           }} 
           style={{marginVertical: 10}}>
-          Actualizar <MaterialCommunityIcons name="upload" size={16} color= {theme.colors.onPrimary} />
+          Actualizar <MaterialCommunityIcons name="upload" size={16} color= {theme.colors.background} />
         </Button>
         <Button mode="contained" onPress={() => {
           navigation.navigate("Welcome")
           }} 
           style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
-          Regresar <MaterialCommunityIcons name="home" size={16} color= {theme.colors.onPrimary} />
+          Regresar <MaterialCommunityIcons name="home" size={16} color= {theme.colors.background} />
         </Button>
 
       </KeyboardAvoidingView>

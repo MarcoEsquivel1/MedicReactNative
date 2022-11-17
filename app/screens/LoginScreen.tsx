@@ -88,7 +88,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
 
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
   
@@ -99,6 +99,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   
   const $mainContainer: ViewStyle = {
     flex: 1,
+    backgroundColor: theme.colors.background,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -110,7 +111,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
 
   if(isLoading){
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center' , backgroundColor: theme.colors.onPrimary}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center' , backgroundColor: theme.colors.background}}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -123,7 +124,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.onPrimary}/>
+      <StatusBar backgroundColor={theme.colors.background}/>
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Login</Text>
         <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
@@ -133,7 +134,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
           handleLogin()
           }} 
           style={{marginVertical: 10}}>
-          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.onPrimary} />
+          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")

@@ -27,7 +27,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
 
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
   
@@ -55,11 +55,11 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.onPrimary}/>
+      <StatusBar backgroundColor={theme.colors.background}/>
       <View style={$mainContainer}>
       <View style={{position: "absolute", top: 0, right: 0, padding: 10}}>
       <ToggleButton
-        icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.onPrimary} />}
+        icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.background} />}
         value="theme"
         style={{backgroundColor: theme.colors.primary}}
         onPress={handleThemeChange}
@@ -70,20 +70,20 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
           navigation.navigate("Doctor")
           }} 
           style={{marginVertical: 10}}>
-          Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color={theme.colors.onPrimary} />
+          Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="contained" onPress={() => {
           /* navigation.navigate("Patient") */
           }}
           style={{marginVertical: 10, backgroundColor: theme.colors.secondary}}>
-          Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color={theme.colors.onPrimary} />
+          Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="contained" onPress={() => {
           doctorStore.clearDoctor()
           authStore.logout()
           }} 
           style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
-          Cerrar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.onPrimary} />
+          Cerrar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.background} />
         </Button>
       </View>
       

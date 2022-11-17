@@ -84,7 +84,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
   const { theme } = useContext(AppContext)
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
   
@@ -119,7 +119,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.onPrimary}/>
+      <StatusBar backgroundColor={theme.colors.background}/>
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Crear cuenta</Text>
         <TextInput label="Email" value={email} onChangeText={setEmail} mode="outlined" style={{marginVertical: 10}} error={emptyEmail}/>
@@ -131,7 +131,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
           handleregister()
           }} 
           style={{marginVertical: 10}}>
-          Crear cuenta <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.onPrimary} />
+          Crear cuenta <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")
