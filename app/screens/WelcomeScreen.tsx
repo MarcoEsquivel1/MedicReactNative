@@ -2,10 +2,9 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC, useContext, useEffect, useState,
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { TextStyle, View, ViewStyle, StatusBar } from "react-native"
 import { Screen } from "../components"
-import { Button, Text, TextInput, ToggleButton, useTheme } from "react-native-paper"
+import { Button, Text, ToggleButton } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { AppContext } from '../context/AppContextProvider.js'
@@ -13,18 +12,15 @@ import { AppContext } from '../context/AppContextProvider.js'
 // @ts-ignore
 export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> = observer(function WelcomeScreen(props) {
   const { navigation } = props;
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState(false)
 
   const { authStore, doctorStore, themeStore} = useStores()
 
   const handleThemeChange = () => {
     themeStore.toggleTheme()
   }
-
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
+
   useEffect(() => {
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
@@ -37,21 +33,21 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   
   const $screenContentContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
     paddingBottom: 50,
   }
   
-  const $loginContainer: ViewStyle = {
+  const $mainContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
   }
 
-  const $titleLogin: TextStyle = {
+  const $mainTitle: TextStyle = {
     color: theme.colors.primary,
   }
+
+  
   return (
     <Screen
       style={$root}
@@ -60,7 +56,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
       contentContainerStyle={$screenContentContainer}
     >     
       <StatusBar backgroundColor={theme.colors.onPrimary}/>
-      <View style={$loginContainer}>
+      <View style={$mainContainer}>
       <View style={{position: "absolute", top: 0, right: 0, padding: 10}}>
       <ToggleButton
         icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.onPrimary} />}
@@ -69,7 +65,7 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
         onPress={handleThemeChange}
       />
       </View>
-        <Text variant="displayLarge" className="text-center mb-5" style={$titleLogin}>Home</Text>
+        <Text variant="displayLarge" className="text-center mb-5" style={$mainTitle}>Home</Text>
         <Button mode="contained" onPress={() => {
           navigation.navigate("Doctor")
           }} 

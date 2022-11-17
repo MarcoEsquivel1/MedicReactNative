@@ -2,13 +2,11 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC, useContext, useEffect, useState,
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView } from "react-native"
 import { Screen } from "../components"
 import { ActivityIndicator, Button, MD2Colors, Text, TextInput } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
-import { isLoading } from "expo-font"
 import { AppContext } from '../context/AppContextProvider.js'
 
 // STOP! READ ME FIRST!
@@ -41,11 +39,6 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     authStore.setIsError(false)
     authStore.setErrorMessage("")
   }, []);
-  
-  useEffect(() => {
-    setError(authStore.getIsError)
-    setErrorMessage(authStore.getErrorMessage)
-  }, [authStore.isError, authStore.errorMessage]);
 
   const iconpassword = () => {
     if (isSecureTextEntry) {
@@ -57,37 +50,6 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
         <MaterialCommunityIcons name="eye-off" size={24} color={theme.colors.onBackground}/>
       )
     }
-  }
-
-  const hadleSecureTextEntry = () => {
-    setIsSecureTextEntry(!isSecureTextEntry)
-  }
-  // @ts-ignore
-  const { theme } = useContext(AppContext)
-
-
-  const $root: ViewStyle = {
-    flex: 1,
-    backgroundColor: theme.colors.onPrimary,
-    paddingHorizontal: 20,
-  }
-  
-  const $screenContentContainer: ViewStyle = {
-    flex: 1,
-    backgroundColor: theme.colors.onPrimary,
-    paddingBottom: 50,
-  }
-  
-  const $mainContainer: ViewStyle = {
-    flex: 1,
-    backgroundColor: theme.colors.onPrimary,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",   
-  }
-
-  const $mainTitle: TextStyle = {
-    color: theme.colors.primary,
   }
 
   function handleLogin() {
@@ -111,6 +73,40 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       authStore.login()
     }
   } 
+  
+  useEffect(() => {
+    setError(authStore.getIsError)
+    setErrorMessage(authStore.getErrorMessage)
+  }, [authStore.isError, authStore.errorMessage]);
+
+  const hadleSecureTextEntry = () => {
+    setIsSecureTextEntry(!isSecureTextEntry)
+  }
+  // @ts-ignore
+  const { theme } = useContext(AppContext)
+
+
+  const $root: ViewStyle = {
+    flex: 1,
+    backgroundColor: theme.colors.onPrimary,
+    paddingHorizontal: 20,
+  }
+  
+  const $screenContentContainer: ViewStyle = {
+    flex: 1,
+    paddingBottom: 50,
+  }
+  
+  const $mainContainer: ViewStyle = {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",   
+  }
+
+  const $mainTitle: TextStyle = {
+    color: theme.colors.primary,
+  }
 
   if(isLoading){
     return (

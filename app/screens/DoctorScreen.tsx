@@ -2,13 +2,11 @@ import { observer } from "mobx-react-lite"
 import React, {
   FC, useEffect, useState, useContext
 } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView } from "react-native"
 import { Screen } from "../components"
 import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
-import { isLoading } from "expo-font"
 import { TimePickerModal } from 'react-native-paper-dates'
 import { AppContext } from '../context/AppContextProvider.js'
 // import { useNavigation } from "@react-navigation/native"
@@ -39,6 +37,39 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
   const [visible1, setVisible1] = useState(false)
   const [visible2, setVisible2] = useState(false)
 
+  function handleUpdate() {
+    if (doctor_Name === "") {
+      setEmptyDoctorName(true)
+    } else {
+      setEmptyDoctorName(false)
+    }
+    if (start_time === null) {
+      setEmptyStartTime(true)
+    } else {
+      setEmptyStartTime(false)
+    }
+    if (end_time === null) {
+      setEmptyEndTime(true)
+    } else {
+      setEmptyEndTime(false)
+    }
+    if (doctor_Name !== "" && start_time !== null && end_time !== null) {
+      setEmptyDoctorName(false)
+      setEmptyStartTime(false)
+      setEmptyEndTime(false)
+      
+      doctorStore.setNombreDoctor(doctor_Name)
+      doctorStore.setStartTime(start_time)
+      doctorStore.setEndTime(end_time)
+      const token = authStore.getAuthToken
+      doctorStore.updateDoctor(token)
+
+      setDoctorName("")
+      setStartTime(null)
+      setEndTime(null)
+    }
+  }
+
   const handleThemeChange = () => {
     themeStore.toggleTheme()
   }
@@ -56,7 +87,6 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
   const onConfirm1 = React.useCallback(
     ({ hours, minutes }) => {
       setVisible1(false);
-      //if minutes != 0
       if(minutes >= 10 && hours >= 10){
         setStartTime(`${hours}:${minutes}`)
       }else if(minutes < 10 && hours >= 10){
@@ -128,13 +158,11 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
   
   const $screenContentContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
     paddingBottom: 50,
   }
   
   const $mainContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -142,40 +170,6 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
 
   const $mainTitle: TextStyle = {
     color: theme.colors.primary,
-  }
-
-  function handleUpdate() {
-    if (doctor_Name === "") {
-      setEmptyDoctorName(true)
-    } else {
-      setEmptyDoctorName(false)
-    }
-    if (start_time === null) {
-      setEmptyStartTime(true)
-    } else {
-      setEmptyStartTime(false)
-    }
-    if (end_time === null) {
-      setEmptyEndTime(true)
-    } else {
-      setEmptyEndTime(false)
-    }
-    if (doctor_Name !== "" && start_time !== null && end_time !== null) {
-      setEmptyDoctorName(false)
-      setEmptyStartTime(false)
-      setEmptyEndTime(false)
-      
-      doctorStore.setNombreDoctor(doctor_Name)
-      doctorStore.setStartTime(start_time)
-      doctorStore.setEndTime(end_time)
-      const token = authStore.getAuthToken
-      doctorStore.updateDoctor(token)
-
-      setDoctorName("")
-      setStartTime(null)
-      setEndTime(null)
-      /* authStore.login() */
-    }
   } 
 
   if(isLoading){
@@ -194,7 +188,9 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
       contentContainerStyle={$screenContentContainer}
     >   
     <TimePickerModal
+        // @ts-ignore
         clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color={theme.colors.onBackground}/>}
+        // @ts-ignore
         keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color={theme.colors.onBackground}/>}
         visible={visible1}
         onDismiss={onDismiss1}
@@ -211,7 +207,9 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
         // clockIcon="clock-outline" // optional, default is "clock-outline"
       /> 
     <TimePickerModal
+        // @ts-ignore
         clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color={theme.colors.onBackground}/>}
+        // @ts-ignore
         keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color={theme.colors.onBackground}/>}
         visible={visible2}
         onDismiss={onDismiss2}
