@@ -1,14 +1,15 @@
 import { observer } from "mobx-react-lite"
 import React, {
-  FC, useEffect, useState,
+  FC, useContext, useEffect, useState,
 } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "../components"
-import { ActivityIndicator, Button, MD2Colors, Text, TextInput, useTheme } from "react-native-paper"
+import { ActivityIndicator, Button, MD2Colors, Text, TextInput } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
+import { AppContext } from '../context/AppContextProvider.js'
 
 // STOP! READ ME FIRST!
 // To fix the TS error below, you'll need to add the following things in your navigation config:
@@ -21,7 +22,7 @@ import { isLoading } from "expo-font"
 // @ts-ignore
 export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = observer(function LoginScreen(props) {
   const { navigation } = props;
-  const { authStore } = useStores()
+  const { authStore, themeStore } = useStores()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
@@ -49,11 +50,11 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   const iconpassword = () => {
     if (isSecureTextEntry) {
       return (
-        <MaterialCommunityIcons name="eye" size={24} color="black" />
+        <MaterialCommunityIcons name="eye" size={24} color={theme.colors.onBackground}/>
       )
     } else {
       return (
-        <MaterialCommunityIcons name="eye-off" size={24} color="black" />
+        <MaterialCommunityIcons name="eye-off" size={24} color={theme.colors.onBackground}/>
       )
     }
   }
@@ -61,8 +62,10 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   const hadleSecureTextEntry = () => {
     setIsSecureTextEntry(!isSecureTextEntry)
   }
+  // @ts-ignore
+  const { theme } = useContext(AppContext)
 
-  const theme = useTheme();
+
   const $root: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.onPrimary,
@@ -71,8 +74,8 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   
   const $screenContentContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: "black",
-    marginBottom: 50,
+    backgroundColor: theme.colors.onPrimary,
+    paddingBottom: 50,
   }
   
   const $mainContainer: ViewStyle = {
@@ -134,7 +137,7 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
           handleLogin()
           }} 
           style={{marginVertical: 10}}>
-          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
+          Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.onPrimary} />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")

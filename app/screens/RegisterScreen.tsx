@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, {
-  FC, useEffect, useState,
+  FC, useEffect, useState, useContext,
 } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar, KeyboardAvoidingView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -9,6 +9,7 @@ import { ActivityIndicator, Button, MD2Colors, Text, TextInput, useTheme } from 
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { isLoading } from "expo-font"
+import { AppContext } from '../context/AppContextProvider.js'
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
@@ -42,7 +43,8 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
     setErrorMessage(authStore.getErrorMessage)
   }, [authStore.isError , authStore.errorMessage]);
 
-  const theme = useTheme();
+  // @ts-ignore
+  const { theme } = useContext(AppContext)
   const $root: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.onPrimary,
@@ -51,13 +53,13 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
   
   const $screenContentContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: "black",
-    marginBottom: 50,
+    /* backgroundColor: theme.colors.onPrimary, */
+    paddingBottom: 50,
   }
   
   const $mainContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.onPrimary,
+    /* backgroundColor: theme.colors.onPrimary, */
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -133,7 +135,7 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
           handleregister()
           }} 
           style={{marginVertical: 10}}>
-          Crear cuenta <MaterialCommunityIcons name="account-plus" size={16} color="white" />
+          Crear cuenta <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.onPrimary} />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")

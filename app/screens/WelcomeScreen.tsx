@@ -1,14 +1,14 @@
 import { observer } from "mobx-react-lite"
 import React, {
-  FC, useEffect, useState,
+  FC, useContext, useEffect, useState,
 } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle, useWindowDimensions, StatusBar } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "../components"
-import { Button, Text, TextInput, useTheme } from "react-native-paper"
+import { Button, Text, TextInput, ToggleButton, useTheme } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
-
+import { AppContext } from '../context/AppContextProvider.js'
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
 export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> = observer(function WelcomeScreen(props) {
@@ -17,25 +17,33 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
 
-  const { authStore, doctorStore} = useStores()
+  const { authStore, doctorStore, themeStore} = useStores()
 
+  const handleThemeChange = () => {
+    themeStore.toggleTheme()
+  }
 
-  const theme = useTheme();
+  // @ts-ignore
+  const { theme, setTheme } = useContext(AppContext)
+  useEffect(() => {
+    setTheme(themeStore.getTheme)
+  }, [themeStore.theme]);
+
   const $root: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.primaryContainer,
+    backgroundColor: theme.colors.onPrimary,
     paddingHorizontal: 20,
   }
   
   const $screenContentContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: "black",
-    marginBottom: 50,
+    backgroundColor: theme.colors.onPrimary,
+    paddingBottom: 50,
   }
   
   const $loginContainer: ViewStyle = {
     flex: 1,
-    backgroundColor: theme.colors.primaryContainer,
+    backgroundColor: theme.colors.onPrimary,
     width: "100%",
     height: "100%",
     justifyContent: "center",   
@@ -51,27 +59,35 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >     
-      <StatusBar backgroundColor={theme.colors.primaryContainer}/>
+      <StatusBar backgroundColor={theme.colors.onPrimary}/>
       <View style={$loginContainer}>
-        <Text variant="displayLarge" className="text-center" style={$titleLogin}>Home</Text>
+      <View style={{position: "absolute", top: 0, right: 0, padding: 10}}>
+      <ToggleButton
+        icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.onPrimary} />}
+        value="theme"
+        style={{backgroundColor: theme.colors.primary}}
+        onPress={handleThemeChange}
+      />
+      </View>
+        <Text variant="displayLarge" className="text-center mb-5" style={$titleLogin}>Home</Text>
         <Button mode="contained" onPress={() => {
           navigation.navigate("Doctor")
           }} 
           style={{marginVertical: 10}}>
-          Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color="white" />
+          Ver Perfil <MaterialCommunityIcons name="medical-bag" size={16} color={theme.colors.onPrimary} />
         </Button>
         <Button mode="contained" onPress={() => {
           /* navigation.navigate("Patient") */
           }}
           style={{marginVertical: 10, backgroundColor: theme.colors.secondary}}>
-          Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color="white" />
+          Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color={theme.colors.onPrimary} />
         </Button>
         <Button mode="contained" onPress={() => {
           doctorStore.clearDoctor()
           authStore.logout()
           }} 
           style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
-          Cerrar Sesión <MaterialCommunityIcons name="login" size={16} color="white" />
+          Cerrar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.onPrimary} />
         </Button>
       </View>
       
