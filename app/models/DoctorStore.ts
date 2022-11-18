@@ -77,6 +77,7 @@ export const DoctorStoreModel = types
         this.setStartTime(response.data.start_time)
         this.setEndTime(response.data.end_time)
         this.setErrorMessage(response.message)
+        this.setIsError(false)
       }else{
         if(response.status === 422){
           this.setIsError(true);
@@ -96,6 +97,7 @@ export const DoctorStoreModel = types
       const response = await MedicApiService.updateDoctor("Bearer " + token, self.nombre_doctor, self.start_time, self.end_time)
       if (response.status === 200) {
         this.setErrorMessage(response.message)
+        this.setIsError(false)
         this.setNombreDoctor(response.data.name)
         this.setStartTime(response.data.start_time)
         this.setEndTime(response.data.end_time)
@@ -117,9 +119,35 @@ export const DoctorStoreModel = types
       this.setIsLoading(true)
       const response = await MedicApiService.getPatients("Bearer " + token)
       if (response.status === 200) {
-        this.setErrorMessage(response.message)
+        this.setErrorMessage("")
+        this.setIsError(false)
         const patients = response.data        
         const mappedPatients = patients.map(mapPatient)
+        self.setProp("patientsList", [])
+        self.setProp("patientsList", mappedPatients)     
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
+    async addPatient(name: string, dni: string, phone: string, birthday: string, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.addPatient("Bearer " + token, name, dni, phone, birthday)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const patients = response.data        
+        const mappedPatients = patients.map(mapPatient)
+        self.setProp("patientsList", [])
         self.setProp("patientsList", mappedPatients)
         
       }else{
@@ -135,7 +163,57 @@ export const DoctorStoreModel = types
       setTimeout(() => {
         this.setIsLoading(false)
       }, 500)
-    }
+    },
+    async updatePatient(id: number, name: string, dni: string, phone: string, birthday: string, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.updatePatient("Bearer " + token, id, name, dni, phone, birthday)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const patients = response.data        
+        const mappedPatients = patients.map(mapPatient)
+        self.setProp("patientsList", [])
+        self.setProp("patientsList", mappedPatients)
+        
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
+    async deletePatient(id: number, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.deletePatient("Bearer " + token, id)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const patients = response.data        
+        const mappedPatients = patients.map(mapPatient)
+        self.setProp("patientsList", [])
+        self.setProp("patientsList", mappedPatients)
+        
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface DoctorStore extends Instance<typeof DoctorStoreModel> {}

@@ -215,13 +215,13 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
 
       <StatusBar backgroundColor={theme.colors.background}/>
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
-      <View style={{position: "absolute", top: 0, right: 0, padding: 10}}>
-        <ToggleButton
-          icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.background} />}
-          value="theme"
-          style={{backgroundColor: theme.colors.primary}}
-          onPress={handleThemeChange}
-        />
+        <View style={{position: "absolute", top: 0, right: 0, padding: 10}}>
+          <ToggleButton
+            icon={() => <MaterialCommunityIcons name="theme-light-dark" size={24} color={theme.colors.background} />}
+            value="theme"
+            style={{backgroundColor: theme.colors.primary}}
+            onPress={handleThemeChange}
+          />
         </View>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Perfil</Text>
         <TextInput label="Nombre Doctor" value={doctor_Name} onChangeText={setDoctorName} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.background}} error={emptyDoctorName}/>

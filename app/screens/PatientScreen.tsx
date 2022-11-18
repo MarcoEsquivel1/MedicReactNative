@@ -43,15 +43,67 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   const [emptyDNI, setEmptyDNI] = useState(false)
   const [tel, setTel] = useState("")
   const [emptyTel, setEmptyTel] = useState(false)
-  const [inputDate, setInputDate] = React.useState(new Date('2020-01-01T00:00:00.000Z'));
-
+  const [inputDate, setInputDate] = React.useState<Date | null>(null);
+  const [emptyDate, setEmptyDate] = useState(false)
   const [visible, setVisible] = React.useState(false);
+  const [visibleDelete, setVisibleDelete] = React.useState(false);
+
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
+
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
+  const showModalDelete = () => setVisibleDelete(true);
+  const hideModalDelete = () => setVisibleDelete(false);
+
   const handleAdd = () => {
     showModal()
+  }
+
+  const handleDelete = () => {
+    console.log()
+    showModalDelete()
+  }
+
+  const handleConfirmDelete = () => {
+    if (selectedPatient) {
+      const token = authStore.getAuthToken
+      doctorStore.deletePatient(selectedPatient.id, token)
+      hideModalDelete()
+      setSelectedPatient(null)
+    }
+  }
+
+  const handleSubmmit = () => {
+    if (name === "") {
+      setEmptyName(true)  
+    }else{
+      setEmptyName(false)
+    }
+    if (DNI === "") {
+      setEmptyDNI(true)
+    }else{
+      setEmptyDNI(false)
+    }
+    if (tel === "") {
+      setEmptyTel(true)
+    }else{
+      setEmptyTel(false)
+    }
+    if (inputDate === null) {
+      setEmptyDate(true)
+    }else{
+      setEmptyDate(false)
+    }
+    if (name !== "" && DNI !== "" && tel !== "" && inputDate !== null) {
+      const token = authStore.getAuthToken
+      doctorStore.addPatient(name, DNI, tel, inputDate.toLocaleDateString("sv"), token)
+      setName("")
+      setDNI("")
+      setTel("")
+      setInputDate(null)
+    }
   }
 
   // @ts-ignore
@@ -70,6 +122,17 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   }, [doctorStore.isError, doctorStore.errorMessage]);
 
   useEffect(() => {
+    doctorStore.setIsError(false)
+    doctorStore.setErrorMessage("")
+    setErrorMessage(doctorStore.getErrorMessage)
+    setError(doctorStore.getIsError)
+    setEmptyDNI(false)
+    setEmptyName(false)
+    setEmptyTel(false)
+    setEmptyDate(false)
+  }, [visible])
+
+  useEffect(() => {
     doctorStore.setIsLoading(false)
     doctorStore.setIsError(false)
     doctorStore.setErrorMessage("")
@@ -85,7 +148,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   
   const $screenContentContainer: ViewStyle = {
     flex: 1,
-    paddingBottom: 50,
+    paddingBottom: 15,
   }
   
   const $mainContainer: ViewStyle = {
@@ -98,7 +161,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
 
   const $mainTitle: TextStyle = {
     color: theme.colors.onBackground,
-    marginBottom: 20,
+    marginBottom: 5,
   } 
 
   const $modalStyle = {
@@ -128,6 +191,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     )
   }
 
+  
   return (
     <Screen
       style={$root}
@@ -146,6 +210,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
           </View>
           <KeyboardAvoidingView behavior={'height'} enabled>
             <Text variant="headlineMedium" className="mb-3">Agregar Paciente</Text>
+            <Text variant="labelLarge" className="text-left mb-3" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
             <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{marginVertical: 10}} error={emptyName}/>
             <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{marginVertical: 10}} error={emptyDNI}/>
             <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{marginVertical: 10}} error={emptyTel}/>
@@ -157,9 +222,33 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
               onChange={(d) => setInputDate(d)}
               inputMode="start"
               withModal={false}
-              // other react native TextInput props
-              
+              // other react native TextInput props             
             />
+            <Text variant="labelSmall" style={{marginTop: 10, color: theme.colors.error}}>{emptyDate ? "Debe ingresar una fecha de nacimiento" : ""}</Text>
+            <Button mode="contained" onPress={() => {
+              handleSubmmit()
+            }} style={{marginVertical: 20}}>
+              Agregar
+            </Button>
+          </KeyboardAvoidingView>
+        </Modal>
+      </Portal>
+      <Portal>
+        <Modal visible={visibleDelete} onDismiss={hideModalDelete} contentContainerStyle={$modalStyle}>
+          <View style={{position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100}}>
+            <TouchableOpacity onPress={hideModalDelete} style={$closeButton}>
+              <MaterialCommunityIcons name="close" size={34} color={theme.colors.surface} />
+            </TouchableOpacity>
+          </View>
+          <KeyboardAvoidingView behavior={'height'} enabled>
+            <Text variant="headlineMedium" className="mb-3">Eliminar Paciente</Text>
+            <Text variant="labelLarge" className="text-left my-1" style={{color: theme.colors.onSurface }}>¿Está seguro que desea eliminar al paciente {selectedPatient?.getName}?</Text>
+            
+            <Button mode="contained" onPress={() => {
+              handleConfirmDelete()
+            }} style={{marginVertical: 20}}>
+              Eliminar
+            </Button>
           </KeyboardAvoidingView>
         </Modal>
       </Portal>
@@ -172,15 +261,15 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
           />
         </View>
         <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Pacientes</Text>
-        
+        <Text variant="labelLarge" className="text-left mb-4" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
         <FlatList<Patient>
           style={{flex: 1, width: "100%"}}
           data={doctorStore.getPatientsList}
-          contentContainerStyle={{paddingBottom: 20}}
+          contentContainerStyle={{paddingBottom: 5}}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => (
             <View style={{flex: 1, width: "100%", marginBottom: 15}}>
-              <PatientCard patient={item} />
+              <PatientCard patient={item} onDelete={handleDelete} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} />
             </View>
           )}
         />

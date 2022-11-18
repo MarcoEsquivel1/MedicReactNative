@@ -25,6 +25,8 @@ import { RegisterScreen } from "../screens/RegisterScreen"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import {AppContextProvider} from "../context/AppContextProvider.js"
 import { PatientScreen } from "../screens/PatientScreen"
+import { Patient } from "../models/Patient"
+import { PatientDetailScreen } from "../screens/PatientDetailScreen"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -44,6 +46,9 @@ export type AppStackParamList = {
   Register: undefined,
   Doctor: undefined,
   Patient: undefined,
+  PatientDetail: {
+    patient: Patient
+  }
   // 🔥 Your screens go here
 }
 
@@ -76,6 +81,7 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Doctor" component={DoctorScreen} />
           <Stack.Screen name="Patient" component={PatientScreen} options={{...TransitionPresets.SlideFromRightIOS, gestureEnabled: true, gestureDirection: "horizontal"}}/>
+          <Stack.Screen name="PatientDetail" component={PatientDetailScreen} />
         </>
       ) : (
         <>

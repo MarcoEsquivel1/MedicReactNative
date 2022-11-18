@@ -89,6 +89,57 @@ export default class MedicApiService {
             });
             return response.data;
         } catch (error) {
+            console.log(error.response);
+            return error.response;
+        }
+    }
+
+    static async addPatient(token: string, name: string, dni: string, phone: string, birthday: string,) {
+        try {
+            const response = await MedicAPI.post('/patients', {
+                name,
+                dni,
+                phone,
+                birthday
+            }, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    static async updatePatient(token: string, id: number, name: string, dni: string, phone: string, birthday: string) {
+        try {
+            const response = await MedicAPI.put('/patients', {
+                id,
+                name,
+                dni,
+                phone,
+                birthday
+            }, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    static async deletePatient(token: string, id: number) {
+        try {
+            const response = await MedicAPI.delete(`/patients?id=${id}`, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
             return error.response;
         }
     }

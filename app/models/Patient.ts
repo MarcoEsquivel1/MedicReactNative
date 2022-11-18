@@ -1,4 +1,5 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
+import { navigate } from "../navigators"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 
 /**
@@ -7,7 +8,7 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 export const PatientModel = types
   .model("Patient")
   .props({
-    id: types.identifierNumber,
+    id: types.number,
     doctor_id: types.integer,
     name: types.string,
     phone: types.string,
@@ -53,7 +54,10 @@ export const PatientModel = types
     },
     setBirthday(birthday: string) {
       self.birthday = birthday
-    }
+    },
+    navigate() {
+      navigate("PatientDetail", { patient: self })
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface Patient extends Instance<typeof PatientModel> {}
