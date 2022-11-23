@@ -22,6 +22,7 @@ import {
   enGB,
   registerTranslation,
 } from 'react-native-paper-dates'
+import { AppointmentCard } from "../components/AppointmentCard"
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)
@@ -31,25 +32,14 @@ registerTranslation('en-GB', enGB)
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">> = observer(function PatientScreen(props) {
+export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appointment">> = observer(function AppointmentScreen(props) {
   const { navigation } = props;
   const { authStore, doctorStore, themeStore } = useStores()
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [error, setError] = useState(false)
-  const [name, setName] = useState("")
-  const [emptyName, setEmptyName] = useState(false)
-  const [DNI, setDNI] = useState("")
-  const [emptyDNI, setEmptyDNI] = useState(false)
-  const [tel, setTel] = useState("")
-  const [emptyTel, setEmptyTel] = useState(false)
-  const [inputDate, setInputDate] = React.useState<Date | null>(null);
-  const [emptyDate, setEmptyDate] = useState(false)
   const [visible, setVisible] = React.useState(false);
   const [visibleDelete, setVisibleDelete] = React.useState(false);
-
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
-
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -67,43 +57,11 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
   }
 
   const handleConfirmDelete = () => {
-    if (selectedPatient) {
-      const token = authStore.getAuthToken
-      doctorStore.deletePatient(selectedPatient.id, token)
-      hideModalDelete()
-      setSelectedPatient(null)
-    }
+  
   }
 
   const handleSubmmit = () => {
-    if (name === "") {
-      setEmptyName(true)  
-    }else{
-      setEmptyName(false)
-    }
-    if (DNI === "") {
-      setEmptyDNI(true)
-    }else{
-      setEmptyDNI(false)
-    }
-    if (tel === "") {
-      setEmptyTel(true)
-    }else{
-      setEmptyTel(false)
-    }
-    if (inputDate === null) {
-      setEmptyDate(true)
-    }else{
-      setEmptyDate(false)
-    }
-    if (name !== "" && DNI !== "" && tel !== "" && inputDate !== null) {
-      const token = authStore.getAuthToken
-      doctorStore.addPatient(name, DNI, tel, inputDate.toLocaleDateString("sv"), token)
-      setName("")
-      setDNI("")
-      setTel("")
-      setInputDate(null)
-    }
+    
   }
 
   // @ts-ignore
@@ -112,9 +70,6 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
 
-  useEffect(() => {
-    setIsLoading(doctorStore.getIsLoading)
-  }, [doctorStore.isLoading])
 
   useEffect(() => {
     setError(doctorStore.getIsError)
@@ -126,10 +81,10 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     doctorStore.setErrorMessage("")
     setErrorMessage(doctorStore.getErrorMessage)
     setError(doctorStore.getIsError)
-    setEmptyDNI(false)
+    /* setEmptyDNI(false)
     setEmptyName(false)
     setEmptyTel(false)
-    setEmptyDate(false)
+    setEmptyDate(false) */
   }, [visible])
 
   useEffect(() => {
@@ -137,7 +92,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     doctorStore.setIsError(false)
     doctorStore.setErrorMessage("")
     const token = authStore.getAuthToken
-    doctorStore.getPatients(token)
+    
   }, []);
 
   const $root: ViewStyle = {
@@ -181,6 +136,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     width: 50,
     height: 50,
   }
+  
 
   if(isLoading){
     return (
@@ -191,7 +147,6 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     )
   }
 
-  
   return (
     <Screen
       style={$root}
@@ -209,22 +164,10 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
             </TouchableOpacity>
           </View>
           <KeyboardAvoidingView behavior={'height'} enabled>
-            <Text variant="headlineMedium" className="mb-3">Agregar Paciente</Text>
+            <Text variant="headlineMedium" className="mb-3">Agregar Cita</Text>
             <Text variant="labelLarge" className="text-left mb-3" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
-            <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{marginVertical: 10}} error={emptyName}/>
-            <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{marginVertical: 10}} error={emptyDNI}/>
-            <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{marginVertical: 10}} error={emptyTel}/>
-            <DatePickerInput
-              locale="sv"
-              label="Birthdate"
-              value={inputDate}
-              mode="outlined"
-              onChange={(d) => setInputDate(d)}
-              inputMode="start"
-              withModal={false}
-              // other react native TextInput props             
-            />
-            <Text variant="labelSmall" style={{marginTop: 10, color: theme.colors.error}}>{emptyDate ? "Debe ingresar una fecha de nacimiento" : ""}</Text>
+            {/* Contenido add */}
+            
             <Button mode="contained" onPress={() => {
               handleSubmmit()
             }} style={{marginVertical: 20}}>
@@ -241,8 +184,8 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
             </TouchableOpacity>
           </View>
           <KeyboardAvoidingView behavior={'height'} enabled>
-            <Text variant="headlineMedium" className="mb-3">Eliminar Paciente</Text>
-            <Text variant="labelLarge" className="text-left my-1" style={{color: theme.colors.onSurface }}>¿Está seguro que desea eliminar al paciente {selectedPatient?.getName}?</Text>
+            <Text variant="headlineMedium" className="mb-3">Eliminar Cita</Text>
+            <Text variant="labelLarge" className="text-left my-1" style={{color: theme.colors.onSurface }}>¿Está seguro que desea eliminar?</Text>
             
             <Button mode="contained" onPress={() => {
               handleConfirmDelete()
@@ -260,8 +203,12 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
             onPress={handleAdd}
           />
         </View>
-        <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Pacientes</Text>
+        <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Citas</Text>
         <Text variant="labelLarge" className="text-left mb-4" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
+        
+        <AppointmentCard />
+
+
         <FlatList<Patient>
           style={{flex: 1, width: "100%"}}
           data={doctorStore.getPatientsList}
@@ -269,7 +216,7 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => (
             <View style={{flex: 1, width: "100%", marginBottom: 15}}>
-              <PatientCard patient={item} onDelete={handleDelete} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} />
+              {/* Card cita */}
             </View>
           )}
         />
@@ -278,4 +225,3 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     </Screen>
   )
 })
-

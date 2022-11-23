@@ -8,6 +8,7 @@ export const MedicAPI = axios.create({
 });
 
 export default class MedicApiService {
+    //Auth
     static async login(username: string, password: string) {
         try {
             const response = await MedicAPI.post('/login', {
@@ -49,6 +50,7 @@ export default class MedicApiService {
         }
     }
 
+    //Doctors
     static async getDoctor(token: string) {
         try {
             const response = await MedicAPI.get('/doctor', {

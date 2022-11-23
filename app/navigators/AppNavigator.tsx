@@ -27,6 +27,7 @@ import {AppContextProvider} from "../context/AppContextProvider.js"
 import { PatientScreen } from "../screens/PatientScreen"
 import { Patient } from "../models/Patient"
 import { PatientDetailScreen } from "../screens/PatientDetailScreen"
+import { AppointmentScreen } from "../screens/AppointmentScreen"
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -49,6 +50,7 @@ export type AppStackParamList = {
   PatientDetail: {
     patient: Patient
   }
+  Appointment: undefined
   // 🔥 Your screens go here
 }
 
@@ -82,6 +84,7 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="Doctor" component={DoctorScreen} />
           <Stack.Screen name="Patient" component={PatientScreen} options={{...TransitionPresets.SlideFromRightIOS, gestureEnabled: true, gestureDirection: "horizontal"}}/>
           <Stack.Screen name="PatientDetail" component={PatientDetailScreen} />
+          <Stack.Screen name="Appointment" component={AppointmentScreen} options={{...TransitionPresets.SlideFromRightIOS, gestureEnabled: true, gestureDirection: "horizontal"}}/>
         </>
       ) : (
         <>

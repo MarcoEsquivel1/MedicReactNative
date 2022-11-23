@@ -39,7 +39,7 @@ export const PatientCard = observer(function PatientCard(props: PatientCardProps
   }
   
   const $card: ViewStyle = {
-    backgroundColor: theme.colors.primaryContainer,
+    backgroundColor: theme.colors.secondary,
     borderRadius: 20,
     padding: 10,
   }
@@ -49,7 +49,7 @@ export const PatientCard = observer(function PatientCard(props: PatientCardProps
   }
 
   const $deleteButton: ViewStyle = {
-    backgroundColor: theme.colors.errorContainer,
+    backgroundColor: theme.colors.error,
     borderRadius: 20,
     borderBottomEndRadius: 0,
     borderTopStartRadius: 0,
@@ -60,7 +60,7 @@ export const PatientCard = observer(function PatientCard(props: PatientCardProps
   }
 
   const $horasItem: ViewStyle = {
-    backgroundColor: theme.colors.errorContainer,
+    backgroundColor: theme.colors.onSecondaryContainer,
     marginVertical: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,

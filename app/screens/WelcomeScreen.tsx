@@ -78,6 +78,12 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
           Ver Pacientes <MaterialCommunityIcons name="account-multiple" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="contained" onPress={() => {
+          navigation.navigate("Appointment")
+          }}
+          style={{marginVertical: 10, backgroundColor: theme.colors.secondary}}>
+          Ver Citas <MaterialCommunityIcons name="calendar" size={16} color={theme.colors.background} />
+        </Button>
+        <Button mode="contained" onPress={() => {
           doctorStore.clearDoctor()
           authStore.logout()
           }} 
