@@ -1,9 +1,10 @@
 import { th } from "date-fns/locale"
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import MedicApiService from "../services/MedicAPI"
-import { mapPatient } from "../utils/mapping"
+import { mapPatient, mapAppointment } from "../utils/mapping"
+import { AppointmentModel } from "./Appointment"
 import { withSetPropAction } from "./helpers/withSetPropAction"
-import { PatientModel } from "./Patient"
+import { Patient, PatientModel } from "./Patient"
 
 /**
  * Model description here for TypeScript hints.
@@ -18,6 +19,7 @@ export const DoctorStoreModel = types
     start_time: types.optional(types.string, ""),
     end_time: types.optional(types.string, ""),
     patientsList: types.optional(types.array(PatientModel), []),
+    appointmentsList: types.optional(types.array(AppointmentModel), []),
   })
   .actions(withSetPropAction)
   .views((self) => ({
@@ -41,7 +43,10 @@ export const DoctorStoreModel = types
     },
     get getPatientsList() {
       return self.patientsList
-    }
+    },
+    get getAppointmentsList() {
+      return self.appointmentsList
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     setNombreDoctor: (nombre_doctor: string) => {
@@ -200,6 +205,40 @@ export const DoctorStoreModel = types
         self.setProp("patientsList", [])
         self.setProp("patientsList", mappedPatients)
         
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
+    findPatient(id: number) {
+      //find patient in patientsList
+      const patient: Patient = self.patientsList.find((patient: Patient) => patient.id === id)
+      if (patient) {
+        return patient
+      } else {
+        return null
+      }
+    },
+    async getAppointments(token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.getAppointments("Bearer " + token)
+      console.log(response)
+      if (response.status === 200) {
+        this.setErrorMessage("")
+        this.setIsError(false)
+        const appointments = response.data        
+        const mappedAppointments = appointments.map(mapAppointment)
+        self.setProp("appointmentsList", [])
+        self.setProp("appointmentsList", mappedAppointments)     
       }else{
         if(response.status === 422){
           this.setIsError(true);

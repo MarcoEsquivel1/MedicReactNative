@@ -145,4 +145,18 @@ export default class MedicApiService {
             return error.response;
         }
     }
+
+    //Appointments
+    static async getAppointments(token: string) {
+        try {
+            const response = await MedicAPI.get('/appointments', {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
 }

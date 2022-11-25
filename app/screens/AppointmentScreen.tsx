@@ -23,6 +23,7 @@ import {
   registerTranslation,
 } from 'react-native-paper-dates'
 import { AppointmentCard } from "../components/AppointmentCard"
+import { Appointment } from "../models/Appointment"
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)
@@ -70,6 +71,9 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
 
+  useEffect(() => {
+    setIsLoading(doctorStore.getIsLoading)
+  }, [doctorStore.isLoading])
 
   useEffect(() => {
     setError(doctorStore.getIsError)
@@ -92,7 +96,7 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     doctorStore.setIsError(false)
     doctorStore.setErrorMessage("")
     const token = authStore.getAuthToken
-    
+    doctorStore.getAppointments(token)
   }, []);
 
   const $root: ViewStyle = {
@@ -206,17 +210,17 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
         <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Citas</Text>
         <Text variant="labelLarge" className="text-left mb-4" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
         
-        <AppointmentCard />
+        {/* <AppointmentCard /> */}
 
 
-        <FlatList<Patient>
+        <FlatList<Appointment>
           style={{flex: 1, width: "100%"}}
-          data={doctorStore.getPatientsList}
+          data={doctorStore.getAppointmentsList}
           contentContainerStyle={{paddingBottom: 5}}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => (
             <View style={{flex: 1, width: "100%", marginBottom: 15}}>
-              {/* Card cita */}
+              <AppointmentCard appointment={item} />
             </View>
           )}
         />

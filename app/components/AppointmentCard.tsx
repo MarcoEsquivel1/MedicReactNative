@@ -9,27 +9,33 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { TimePickerModal } from 'react-native-paper-dates'
 import { AppContext } from '../context/AppContextProvider.js'
-import { Patient } from "../models/Patient"
+import { Patient, PatientModel } from "../models/Patient"
+import { Appointment } from "../models/Appointment"
 
 export interface AppointmentCardProps {
   /**
    * An optional style override useful for padding & margin.
    */
-  
+  appointment: Appointment
 }
 
 /**
  * Describe your component here
  */
 export const AppointmentCard = observer(function AppointmentCard(props: AppointmentCardProps) {
-  const {  } = props
+  const { appointment } = props
   const { authStore, doctorStore, themeStore } = useStores()
-  
+  const [patient, setPatient] = useState<Patient | null>(null)
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
   useEffect(() => {
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
+
+  useEffect(() => {
+    //find patient name
+    setPatient(doctorStore.findPatient(appointment.getPatientId))
+  }, []);
 
   const $card: ViewStyle = {
     backgroundColor: theme.colors.secondary,
@@ -53,7 +59,7 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
   }
   
   const $checkButton: ViewStyle = {
-    backgroundColor: 'lightgray',
+    backgroundColor: appointment.getDone == 1 ? 'lightgreen' : 'lightgray',
     borderRadius: 20,
     borderBottomStartRadius: 0,
     borderTopEndRadius: 0,
@@ -80,22 +86,22 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
           </View>
           <View style={{position: "absolute", bottom: 0, right: 0, padding: 0}}>
             <TouchableOpacity onPress={()=>{}} style={$checkButton}>
-              <MaterialCommunityIcons name="check-bold" size={34} color={'gray'} />
+              <MaterialCommunityIcons name="check-bold" size={34} color={appointment.getDone == 1 ? "green" : 'gray'} />
             </TouchableOpacity>
           </View>
           <View className="w-9/12">
-            <Text variant="headlineSmall" style={$cardText}>Nombre Paciente</Text>
+            <Text variant="headlineSmall" style={$cardText}>{patient?.getName}</Text>
           </View>
           <View className="flex flex-row justify-between mt-3">
             <View className="w-2/3 items-center justify-center">
               <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>F. Cita: 2022-11-23</Text>
+                <Text variant="labelLarge" style={$cardText}>F. Cita: {appointment.getDate}</Text>
               </View>
               <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>Hora Cita:  10:30</Text>
+                <Text variant="labelLarge" style={$cardText}>Hora Cita:  {appointment.getTime}</Text>
               </View>
               <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>Estado: Pendiente</Text>
+                <Text variant="labelLarge" style={$cardText}>Estado: {appointment.getDone == 1 ? "Completa" : "Pendiente"}</Text>
               </View>
             </View>
             <View className="w-1/3 items-center justify-center">
