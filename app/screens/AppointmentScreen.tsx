@@ -73,6 +73,30 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     showModalDelete()
   }
 
+  /* const handleChangeState = () => {
+    // delay for 5 second
+    setTimeout(() => {
+      updateState()
+    }, 700)
+    
+  }
+
+  const updateState = () => {
+    console.log("change state")
+    console.log(selectedAppointment)
+    if (selectedAppointment != null) {
+      console.log(selectedAppointment.getDone)
+      let done = selectedAppointment.getDone
+      if(done==1){
+        done = 0
+      }else if(done==0){
+        done = 1
+      }
+      const token = authStore.getAuthToken
+      //doctorStore.updateStateAppointment(selectedAppointment.getId, done, token)
+    }
+  } */
+
   const handleConfirmDelete = () => {
     if(selectedAppointment != null){
       const token = authStore.getAuthToken

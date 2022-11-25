@@ -61,7 +61,10 @@ export const AppointmentModel = types
     },
     setDone(done: number) {
       self.done = done
-    }
+    },
+    navigate() {
+      navigate("AppointmentDetail", { appointment: self })
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface Appointment extends Instance<typeof AppointmentModel> {}

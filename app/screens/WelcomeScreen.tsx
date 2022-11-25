@@ -24,6 +24,10 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
 
+  /* useEffect(() => {
+    authStore.setToken(undefined)
+  }, []) */
+
   const $root: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.background,

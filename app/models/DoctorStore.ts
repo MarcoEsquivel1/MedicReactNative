@@ -285,6 +285,31 @@ export const DoctorStoreModel = types
         this.setIsLoading(false)
       }, 500)
     },
+    async updateAppointment(id: number, patient_id: number, date: string, time: string, comment: string, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.updateAppointment("Bearer " + token, id, patient_id, date, time, comment)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const appointments = response.data        
+        const mappedAppointments = appointments.map(mapAppointment)
+        self.setProp("appointmentsList", [])
+        self.setProp("appointmentsList", mappedAppointments)
+        
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
     async deleteAppointment(id: number, token: string) {
       this.setIsLoading(true)
       const response = await MedicApiService.deleteAppointment("Bearer " + token, id)
@@ -309,7 +334,32 @@ export const DoctorStoreModel = types
       setTimeout(() => {
         this.setIsLoading(false)
       }, 500)
-    }
+    },
+    async updateStateAppointment(id: number, done: number, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.updateStateAppointment("Bearer " + token, id, done)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const appointments = response.data        
+        const mappedAppointments = appointments.map(mapAppointment)
+        self.setProp("appointmentsList", [])
+        self.setProp("appointmentsList", mappedAppointments)
+        
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface DoctorStore extends Instance<typeof DoctorStoreModel> {}

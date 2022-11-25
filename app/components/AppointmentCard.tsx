@@ -45,6 +45,17 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
     onDelete()
   }
 
+  const $onPressChangeState = () => {
+    let done = appointment.getDone
+    if(done == 1){
+      done = 0
+    }else if(done == 0){
+      done = 1
+    }
+    const token = authStore.getAuthToken
+    doctorStore.updateStateAppointment(appointment.getId, done, token)
+  }
+
   const $card: ViewStyle = {
     backgroundColor: theme.colors.secondary,
     borderRadius: 20,
@@ -86,37 +97,39 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
   }
 
   return (
-    <View style={$card}>
-          <View style={{position: "absolute", top: 0, right: 0, padding: 0}}>
-            <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
-              <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
-            </TouchableOpacity>
-          </View>
-          <View style={{position: "absolute", bottom: 0, right: 0, padding: 0}}>
-            <TouchableOpacity onPress={()=>{}} style={$checkButton}>
-              <MaterialCommunityIcons name="check-bold" size={34} color={appointment.getDone == 1 ? "green" : 'gray'} />
-            </TouchableOpacity>
-          </View>
-          <View className="w-9/12">
-            <Text variant="headlineSmall" style={$cardText}>{patient?.getName}</Text>
-          </View>
-          <View className="flex flex-row justify-between mt-3">
-            <View className="w-2/3 items-center justify-center">
-              <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>F. Cita: {appointment.getDate}</Text>
-              </View>
-              <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>Hora Cita:  {appointment.getTime}</Text>
-              </View>
-              <View className="" style={$horasItem}>
-                <Text variant="labelLarge" style={$cardText}>Estado: {appointment.getDone == 1 ? "Completa" : "Pendiente"}</Text>
-              </View>
+    <TouchableOpacity onPress={appointment.navigate}>
+      <View style={$card}>
+        <View style={{position: "absolute", top: 0, right: 0, padding: 0}}>
+          <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
+            <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
+          </TouchableOpacity>
+        </View>
+        <View style={{position: "absolute", bottom: 0, right: 0, padding: 0}}>
+          <TouchableOpacity onPress={$onPressChangeState} style={$checkButton}>
+            <MaterialCommunityIcons name="check-bold" size={34} color={appointment.getDone == 1 ? "green" : 'gray'} />
+          </TouchableOpacity>
+        </View>
+        <View className="w-9/12">
+          <Text variant="headlineSmall" style={$cardText}>{patient?.getName}</Text>
+        </View>
+        <View className="flex flex-row justify-between mt-3">
+          <View className="w-2/3 items-center justify-center">
+            <View className="" style={$horasItem}>
+              <Text variant="labelLarge" style={$cardText}>F. Cita: {appointment.getDate}</Text>
             </View>
-            <View className="w-1/3 items-center justify-center">
-              {/* <MaterialCommunityIcons name="account-outline" size={120} color={$cardText.color} /> */}
+            <View className="" style={$horasItem}>
+              <Text variant="labelLarge" style={$cardText}>Hora Cita:  {appointment.getTime}</Text>
             </View>
+            <View className="" style={$horasItem}>
+              <Text variant="labelLarge" style={$cardText}>Estado: {appointment.getDone == 1 ? "Completa" : "Pendiente"}</Text>
+            </View>
+          </View>
+          <View className="w-1/3 items-center justify-center">
+            {/* <MaterialCommunityIcons name="account-outline" size={120} color={$cardText.color} /> */}
           </View>
         </View>
+      </View>
+    </TouchableOpacity>
   )
 })
 
