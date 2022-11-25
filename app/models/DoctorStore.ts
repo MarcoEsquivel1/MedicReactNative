@@ -2,7 +2,7 @@ import { th } from "date-fns/locale"
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import MedicApiService from "../services/MedicAPI"
 import { mapPatient, mapAppointment } from "../utils/mapping"
-import { AppointmentModel } from "./Appointment"
+import { Appointment, AppointmentModel } from "./Appointment"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { Patient, PatientModel } from "./Patient"
 
@@ -20,6 +20,7 @@ export const DoctorStoreModel = types
     end_time: types.optional(types.string, ""),
     patientsList: types.optional(types.array(PatientModel), []),
     appointmentsList: types.optional(types.array(AppointmentModel), []),
+    pendingAppointmentsList: types.optional(types.array(types.reference(AppointmentModel)), []),
   })
   .actions(withSetPropAction)
   .views((self) => ({
@@ -47,6 +48,9 @@ export const DoctorStoreModel = types
     get getAppointmentsList() {
       return self.appointmentsList
     },
+    get getPendingAppointmentsList() {
+      return self.pendingAppointmentsList
+    }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     setNombreDoctor: (nombre_doctor: string) => {
@@ -245,7 +249,8 @@ export const DoctorStoreModel = types
         const appointments = response.data        
         const mappedAppointments = appointments.map(mapAppointment)
         self.setProp("appointmentsList", [])
-        self.setProp("appointmentsList", mappedAppointments)     
+        self.setProp("appointmentsList", mappedAppointments) 
+        this.getPendingAppointments()
       }else{
         if(response.status === 422){
           this.setIsError(true);
@@ -260,6 +265,13 @@ export const DoctorStoreModel = types
         this.setIsLoading(false)
       }, 500)
     },
+    async getPendingAppointments() {
+      self.setProp("pendingAppointmentsList", [])
+      const pendingAppointments = self.appointmentsList.filter((appointment: Appointment) => appointment.done === 0)
+      // @ts-ignore
+      self.setProp("pendingAppointmentsList", pendingAppointments)
+      console.log("Se han cargado las citas pendientes")
+    },
     async addAppointment(patient_id: number, date: string, time: string, comment: string, token: string) {
       this.setIsLoading(true)
       const response = await MedicApiService.addAppointment("Bearer " + token, patient_id, date, time, comment)
@@ -270,7 +282,7 @@ export const DoctorStoreModel = types
         const mappedAppointments = appointments.map(mapAppointment)
         self.setProp("appointmentsList", [])
         self.setProp("appointmentsList", mappedAppointments)
-        
+        this.getPendingAppointments()
       }else{
         if(response.status === 422){
           this.setIsError(true);
@@ -295,7 +307,7 @@ export const DoctorStoreModel = types
         const mappedAppointments = appointments.map(mapAppointment)
         self.setProp("appointmentsList", [])
         self.setProp("appointmentsList", mappedAppointments)
-        
+        this.getPendingAppointments()
       }else{
         if(response.status === 422){
           this.setIsError(true);
@@ -320,7 +332,7 @@ export const DoctorStoreModel = types
         const mappedAppointments = appointments.map(mapAppointment)
         self.setProp("appointmentsList", [])
         self.setProp("appointmentsList", mappedAppointments)
-        
+        this.getPendingAppointments()
       }else{
         if(response.status === 422){
           this.setIsError(true);
@@ -345,7 +357,7 @@ export const DoctorStoreModel = types
         const mappedAppointments = appointments.map(mapAppointment)
         self.setProp("appointmentsList", [])
         self.setProp("appointmentsList", mappedAppointments)
-        
+        this.getPendingAppointments()
       }else{
         if(response.status === 422){
           this.setIsError(true);

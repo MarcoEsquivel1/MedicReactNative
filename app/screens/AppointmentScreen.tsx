@@ -57,6 +57,7 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
   const [errorEmpty, setErrorEmpty] = useState(false)
   const [errorEmptyMessage, setErrorEmptyMessage] = useState("")
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+  const [pending, setPending] = useState(false)
   
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -73,33 +74,10 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     showModalDelete()
   }
 
-  /* const handleChangeState = () => {
-    // delay for 5 second
-    setTimeout(() => {
-      updateState()
-    }, 700)
-    
-  }
-
-  const updateState = () => {
-    console.log("change state")
-    console.log(selectedAppointment)
-    if (selectedAppointment != null) {
-      console.log(selectedAppointment.getDone)
-      let done = selectedAppointment.getDone
-      if(done==1){
-        done = 0
-      }else if(done==0){
-        done = 1
-      }
-      const token = authStore.getAuthToken
-      //doctorStore.updateStateAppointment(selectedAppointment.getId, done, token)
-    }
-  } */
-
   const handleConfirmDelete = () => {
     if(selectedAppointment != null){
       const token = authStore.getAuthToken
+      setPending(false)
       doctorStore.deleteAppointment(selectedAppointment.id, token)
       hideModalDelete()
       setSelectedAppointment(null)
@@ -130,6 +108,7 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     if (patient != null && inputDate != null && time != null && comment != "") {
       setErrorEmpty(false)
       setErrorEmptyMessage("")
+      setPending(false)
       const token = authStore.getAuthToken
       doctorStore.addAppointment(patient, inputDate.toLocaleDateString("sv"), time, comment, token)
       setErrorMessage(doctorStore.getErrorMessage)
@@ -203,6 +182,14 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     doctorStore.getAppointments(token)
     setPatientList(doctorStore.getPatientsIdandNames)
   }, []);
+
+  useEffect(() => {
+    doctorStore.getPendingAppointments()
+  }, [doctorStore.getAppointmentsList])
+
+  useEffect(() => {
+    console.log(doctorStore.getPendingAppointmentsList)
+  }, [doctorStore.pendingAppointmentsList])
 
   const $root: ViewStyle = {
     flex: 1,
@@ -362,7 +349,13 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
           </KeyboardAvoidingView>
         </Modal>
       </Portal>
-        <View style={{position: "absolute", top: 0, right: 0, padding: 5}}>
+        <View className="flex-row space-x-2" style={{position: "absolute", top: 0, right: 0, padding: 5}}>
+          <ToggleButton
+            icon={() => <MaterialCommunityIcons name="check" size={24} color={pending ? 'gray' : 'green'} />}
+            value="theme"
+            style={{backgroundColor: theme.colors.secondary, zIndex: 100, marginTop: 5}}
+            onPress={() => setPending(!pending)}
+          />
           <ToggleButton
             icon={() => <MaterialCommunityIcons name="plus" size={24} color={theme.colors.background} />}
             value="theme"
@@ -378,7 +371,7 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
 
         <FlatList<Appointment>
           style={{flex: 1, width: "100%"}}
-          data={doctorStore.getAppointmentsList}
+          data={pending ? doctorStore.getPendingAppointmentsList : doctorStore.getAppointmentsList}
           contentContainerStyle={{paddingBottom: 5}}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => (

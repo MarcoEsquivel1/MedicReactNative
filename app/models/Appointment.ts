@@ -8,7 +8,7 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 export const AppointmentModel = types
   .model("Appointment")
   .props({
-    id: types.number,
+    id: types.identifierNumber,
     doctor_id: types.integer,
     patient_id: types.integer,
     date: types.string,
