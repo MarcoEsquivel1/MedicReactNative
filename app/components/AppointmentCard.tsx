@@ -9,7 +9,7 @@ import { useStores } from "../models"
 import { AppContext } from '../context/AppContextProvider.js'
 import { Patient } from "../models/Patient"
 import { Appointment } from "../models/Appointment"
-import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
+import Animated, { FadeInLeft, FadeInRight, FadeOut } from "react-native-reanimated"
 
 export interface AppointmentCardProps {
   /**
@@ -99,7 +99,7 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
   return (
     <Animated.View
       entering={FadeInRight.delay(index * 300)}
-      exiting={FadeInLeft.delay(index * 300)}
+      exiting={FadeOut.delay(index * 300)}
     >
 
       <TouchableOpacity onPress={appointment.navigate}>
