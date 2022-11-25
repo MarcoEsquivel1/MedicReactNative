@@ -36,11 +36,11 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   const iconpassword = () => {
     if (isSecureTextEntry) {
       return (
-        <MaterialCommunityIcons name="eye" size={24} color={theme.colors.onBackground}/>
+        <MaterialCommunityIcons name="eye" size={24} color={theme.colors.onBackground} />
       )
     } else {
       return (
-        <MaterialCommunityIcons name="eye-off" size={24} color={theme.colors.onBackground}/>
+        <MaterialCommunityIcons name="eye-off" size={24} color={theme.colors.onBackground} />
       )
     }
   }
@@ -48,12 +48,12 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
   function handleLogin() {
     if (username === "") {
       setEmptyUsername(true)
-    }else{
+    } else {
       setEmptyUsername(false)
     }
     if (password === "") {
       setEmptyPassword(true)
-    }else{
+    } else {
       setEmptyPassword(false)
     }
     if (username !== "" && password !== "") {
@@ -65,8 +65,8 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       setPassword("")
       authStore.login()
     }
-  } 
-  
+  }
+
   useEffect(() => {
     setError(authStore.getIsError)
     setErrorMessage(authStore.getErrorMessage)
@@ -87,27 +87,27 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
     backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
-  
+
   const $screenContentContainer: ViewStyle = {
     flex: 1,
     paddingBottom: 50,
   }
-  
+
   const $mainContainer: ViewStyle = {
     flex: 1,
     backgroundColor: theme.colors.background,
     width: "100%",
     height: "100%",
-    justifyContent: "center",   
+    justifyContent: "center",
   }
 
   const $mainTitle: TextStyle = {
     color: theme.colors.primary,
   }
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center' , backgroundColor: theme.colors.background}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -119,28 +119,28 @@ export const LoginScreen: FC<StackScreenProps<AppStackScreenProps, "Login">> = o
       preset="fixed"
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
-    >     
-      <StatusBar backgroundColor={theme.colors.background}/>
+    >
+      <StatusBar backgroundColor={theme.colors.background} />
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Login</Text>
-        <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
-        <TextInput label="Password" secureTextEntry={isSecureTextEntry} value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword} right={<TextInput.Icon icon={iconpassword} onPress={hadleSecureTextEntry}/>}/>
-        <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'blue'}}>{errorMessage}</Text>
+        <TextInput label="Username/Email" value={username} onChangeText={setUsername} mode="outlined" style={{ marginVertical: 10 }} error={emptyUsername} />
+        <TextInput label="Password" secureTextEntry={isSecureTextEntry} value={password} onChangeText={setPassword} mode="outlined" style={{ marginVertical: 10 }} error={emptyPassword} right={<TextInput.Icon icon={iconpassword} onPress={hadleSecureTextEntry} />} />
+        <Text variant="labelLarge" className="text-left my-1" style={{ color: error ? 'red' : 'blue' }}>{errorMessage}</Text>
         <Button mode="contained" onPress={() => {
           handleLogin()
-          }} 
-          style={{marginVertical: 10}}>
+        }}
+          style={{ marginVertical: 10 }}>
           Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")
           navigation.navigate("Register")
-          }} style={{marginVertical: 10}}>
+        }} style={{ marginVertical: 10 }}>
           Registrarse <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.primary} />
         </Button>
 
       </KeyboardAvoidingView>
-      
+
 
     </Screen>
   )

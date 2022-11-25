@@ -29,22 +29,22 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
   function handleregister() {
     if (username === "") {
       setEmptyUsername(true)
-    }else{
+    } else {
       setEmptyUsername(false)
     }
     if (password === "") {
       setEmptyPassword(true)
-    }else{
+    } else {
       setEmptyPassword(false)
     }
     if (password_confirmation === "") {
       setEmptyPasswordConfirmation(true)
-    }else{
+    } else {
       setEmptyPasswordConfirmation(false)
     }
     if (email === "") {
       setEmptyEmail(true)
-    }else{
+    } else {
       setEmptyEmail(false)
     }
     if (username !== "" && password !== "" && password_confirmation !== "" && email !== "") {
@@ -62,8 +62,8 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
       setEmail("")
       authStore.register()
     }
-  } 
-  
+  }
+
   useEffect(() => {
     setIsLoading(authStore.getIsLoading)
   }, [authStore.isLoading]);
@@ -73,11 +73,11 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
     authStore.setIsError(false)
     authStore.setErrorMessage("")
   }, []);
-  
+
   useEffect(() => {
     setError(authStore.getIsError)
     setErrorMessage(authStore.getErrorMessage)
-  }, [authStore.isError , authStore.errorMessage]);
+  }, [authStore.isError, authStore.errorMessage]);
 
   // @ts-ignore
   const { theme } = useContext(AppContext)
@@ -86,26 +86,26 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
     backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
-  
+
   const $screenContentContainer: ViewStyle = {
     flex: 1,
     paddingBottom: 50,
   }
-  
+
   const $mainContainer: ViewStyle = {
     flex: 1,
     width: "100%",
     height: "100%",
-    justifyContent: "center",   
+    justifyContent: "center",
   }
 
   const $mainTitle: TextStyle = {
     color: theme.colors.primary,
   }
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -117,30 +117,30 @@ export const RegisterScreen: FC<StackScreenProps<AppStackScreenProps, "Register"
       preset="fixed"
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
-    >     
-      <StatusBar backgroundColor={theme.colors.background}/>
+    >
+      <StatusBar backgroundColor={theme.colors.background} />
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
         <Text variant="displayLarge" className="text-center" style={$mainTitle}>Crear cuenta</Text>
-        <TextInput label="Email" value={email} onChangeText={setEmail} mode="outlined" style={{marginVertical: 10}} error={emptyEmail}/>
-        <TextInput label="Username" value={username} onChangeText={setUsername} mode="outlined" style={{marginVertical: 10}} error={emptyUsername}/>
-        <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{marginVertical: 10}} error={emptyPassword}/>
-        <TextInput label="Password Confirmation" secureTextEntry value={password_confirmation} onChangeText={setPasswordConfirmation} mode="outlined" style={{marginVertical: 10}} error={empityPasswordConfirmation}/>
-        <Text variant="labelLarge" className="text-left my-1" style={{color: error ? 'red' : 'blue'}}>{errorMessage}</Text>
+        <TextInput label="Email" value={email} onChangeText={setEmail} mode="outlined" style={{ marginVertical: 10 }} error={emptyEmail} />
+        <TextInput label="Username" value={username} onChangeText={setUsername} mode="outlined" style={{ marginVertical: 10 }} error={emptyUsername} />
+        <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} mode="outlined" style={{ marginVertical: 10 }} error={emptyPassword} />
+        <TextInput label="Password Confirmation" secureTextEntry value={password_confirmation} onChangeText={setPasswordConfirmation} mode="outlined" style={{ marginVertical: 10 }} error={empityPasswordConfirmation} />
+        <Text variant="labelLarge" className="text-left my-1" style={{ color: error ? 'red' : 'blue' }}>{errorMessage}</Text>
         <Button mode="contained" onPress={() => {
           handleregister()
-          }} 
-          style={{marginVertical: 10}}>
+        }}
+          style={{ marginVertical: 10 }}>
           Crear cuenta <MaterialCommunityIcons name="account-plus" size={16} color={theme.colors.background} />
         </Button>
         <Button mode="outlined" onPress={() => {
           authStore.setErrorMessage("")
           navigation.navigate("Login")
-          }} style={{marginVertical: 10}}>
+        }} style={{ marginVertical: 10 }}>
           Iniciar Sesión <MaterialCommunityIcons name="login" size={16} color={theme.colors.primary} />
         </Button>
 
       </KeyboardAvoidingView>
-      
+
 
     </Screen>
   )

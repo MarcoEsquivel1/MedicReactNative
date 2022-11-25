@@ -9,12 +9,14 @@ import { useStores } from "../models"
 import { AppContext } from '../context/AppContextProvider.js'
 import { Patient } from "../models/Patient"
 import { Appointment } from "../models/Appointment"
+import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
 
 export interface AppointmentCardProps {
   /**
    * An optional style override useful for padding & margin.
    */
   appointment: Appointment
+  index: number
   onDelete: () => void
   selectedAppointment: Appointment
   setSelectedAppointment: (appointment: Appointment) => void
@@ -24,7 +26,7 @@ export interface AppointmentCardProps {
  * Describe your component here
  */
 export const AppointmentCard = observer(function AppointmentCard(props: AppointmentCardProps) {
-  const { appointment, onDelete, setSelectedAppointment } = props
+  const { appointment, onDelete, setSelectedAppointment, index } = props
   const { authStore, doctorStore, themeStore } = useStores()
   const [patient, setPatient] = useState<Patient | null>(null)
   // @ts-ignore
@@ -45,9 +47,9 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
 
   const $onPressChangeState = () => {
     let done = appointment.getDone
-    if(done == 1){
+    if (done == 1) {
       done = 0
-    }else if(done == 0){
+    } else if (done == 0) {
       done = 1
     }
     const token = authStore.getAuthToken
@@ -74,7 +76,7 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
     alignItems: "center",
     justifyContent: "center",
   }
-  
+
   const $checkButton: ViewStyle = {
     backgroundColor: appointment.getDone == 1 ? 'lightgreen' : 'lightgray',
     borderRadius: 20,
@@ -95,38 +97,44 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
   }
 
   return (
-    <TouchableOpacity onPress={appointment.navigate}>
-      <View style={$card}>
-        <View style={{position: "absolute", top: 0, right: 0, padding: 0}}>
-          <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
-            <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
-          </TouchableOpacity>
-        </View>
-        <View style={{position: "absolute", bottom: 0, right: 0, padding: 0}}>
-          <TouchableOpacity onPress={$onPressChangeState} style={$checkButton}>
-            <MaterialCommunityIcons name="check-bold" size={34} color={appointment.getDone == 1 ? "green" : 'gray'} />
-          </TouchableOpacity>
-        </View>
-        <View className="w-9/12">
-          <Text variant="headlineSmall" style={$cardText}>{patient?.getName}</Text>
-        </View>
-        <View className="flex flex-row justify-between mt-3">
-          <View className="w-2/3 items-center justify-center">
-            <View className="" style={$horasItem}>
-              <Text variant="labelLarge" style={$cardText}>F. Cita: {appointment.getDate}</Text>
+    <Animated.View
+      entering={FadeInRight.delay(index * 300)}
+      exiting={FadeInLeft.delay(index * 300)}
+    >
+
+      <TouchableOpacity onPress={appointment.navigate}>
+        <View style={$card}>
+          <View style={{ position: "absolute", top: 0, right: 0, padding: 0 }}>
+            <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
+              <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ position: "absolute", bottom: 0, right: 0, padding: 0 }}>
+            <TouchableOpacity onPress={$onPressChangeState} style={$checkButton}>
+              <MaterialCommunityIcons name="check-bold" size={34} color={appointment.getDone == 1 ? "green" : 'gray'} />
+            </TouchableOpacity>
+          </View>
+          <View className="w-9/12">
+            <Text variant="headlineSmall" style={$cardText}>{patient?.getName}</Text>
+          </View>
+          <View className="flex flex-row justify-between mt-3">
+            <View className="w-2/3 items-center justify-center">
+              <View className="" style={$horasItem}>
+                <Text variant="labelLarge" style={$cardText}>F. Cita: {appointment.getDate}</Text>
+              </View>
+              <View className="" style={$horasItem}>
+                <Text variant="labelLarge" style={$cardText}>Hora Cita:  {appointment.getTime}</Text>
+              </View>
+              <View className="" style={$horasItem}>
+                <Text variant="labelLarge" style={$cardText}>Estado: {appointment.getDone == 1 ? "Completa" : "Pendiente"}</Text>
+              </View>
             </View>
-            <View className="" style={$horasItem}>
-              <Text variant="labelLarge" style={$cardText}>Hora Cita:  {appointment.getTime}</Text>
-            </View>
-            <View className="" style={$horasItem}>
-              <Text variant="labelLarge" style={$cardText}>Estado: {appointment.getDone == 1 ? "Completa" : "Pendiente"}</Text>
+            <View className="w-1/3 items-center justify-center">
             </View>
           </View>
-          <View className="w-1/3 items-center justify-center">
-          </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Animated.View>
   )
 })
 

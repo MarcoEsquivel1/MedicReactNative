@@ -18,6 +18,7 @@ import {
   enGB,
   registerTranslation,
 } from 'react-native-paper-dates'
+import Animated, { FlipInYRight, ZoomIn, ZoomOut } from "react-native-reanimated"
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)
@@ -56,7 +57,7 @@ export const PatientDetailScreen: FC<StackScreenProps<AppStackScreenProps, "Pati
     setTel(patient.getPhone)
     if (patient.getBirthday != null) {
       setInputDate(new Date(patient.getBirthday))
-    }else{
+    } else {
       setInputDate(null)
     }
     setIsLoading(false)
@@ -69,23 +70,23 @@ export const PatientDetailScreen: FC<StackScreenProps<AppStackScreenProps, "Pati
 
   const handleSubmmit = () => {
     if (name === "") {
-      setEmptyName(true)  
-    }else{
+      setEmptyName(true)
+    } else {
       setEmptyName(false)
     }
     if (DNI === "") {
       setEmptyDNI(true)
-    }else{
+    } else {
       setEmptyDNI(false)
     }
     if (tel === "") {
       setEmptyTel(true)
-    }else{
+    } else {
       setEmptyTel(false)
     }
     if (inputDate === null) {
       setEmptyDate(true)
-    }else{
+    } else {
       setEmptyDate(false)
     }
     if (name !== "" && DNI !== "" && tel !== "" && inputDate !== null) {
@@ -100,26 +101,26 @@ export const PatientDetailScreen: FC<StackScreenProps<AppStackScreenProps, "Pati
     backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
-  
+
   const $screenContentContainer: ViewStyle = {
     flex: 1,
     paddingBottom: 50,
   }
-  
+
   const $mainContainer: ViewStyle = {
     flex: 1,
     width: "100%",
     height: "100%",
-    justifyContent: "center",   
+    justifyContent: "center",
   }
 
   const $mainTitle: TextStyle = {
     color: theme.colors.primary,
-  } 
+  }
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -132,41 +133,77 @@ export const PatientDetailScreen: FC<StackScreenProps<AppStackScreenProps, "Pati
       preset="fixed"
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
-    >     
-      <StatusBar backgroundColor={theme.colors.background}/>
+    >
+      <StatusBar backgroundColor={theme.colors.background} />
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
-      <Text variant="displayMedium" className="text-center" style={$mainTitle}>Editar Paciente</Text>
-        <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{marginVertical: 10}} error={emptyName}/>
-        <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{marginVertical: 10}} error={emptyDNI}/>
-        <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{marginVertical: 10}} error={emptyTel}/>
-        <View style={{marginVertical: 10}}>
-          <DatePickerInput
-                  locale="sv"
-                  label="Birthdate"
-                  value={inputDate}
-                  mode="outlined"
-                  onChange={(d) => setInputDate(d)}
-                  inputMode="start"
-                  withModal={false}
-                  style={{display: "flex", marginVertical: 10}}
-                  // other react native TextInput props             
-                />
-        </View>
-        <Text variant="labelLarge" className="text-left my-1" style={{color: error ? theme.colors.error : theme.colors.primary}}>{errorMessage}</Text>
-        <Button mode="contained" onPress={() => {
-          handleSubmmit()
-        }} style={{marginVertical: 20}}>
-          Actualizar <MaterialCommunityIcons name="upload" size={16} color= {theme.colors.background} />
-        </Button>
-        <Button mode="contained" onPress={() => {
-          props.navigation.goBack()
-          doctorStore.setIsError(false)
-          doctorStore.setErrorMessage("")
-        }} style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
-          Regresar <MaterialCommunityIcons name="arrow-left" size={16} color= {theme.colors.background} />
-        </Button>
+        <Animated.View
+          entering={ZoomIn.delay(100)}
+          exiting={ZoomOut}
+        >
+          <Text variant="displayMedium" className="text-center" style={$mainTitle}>Editar Paciente</Text>
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{ marginVertical: 10 }} error={emptyName} />
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+
+          <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{ marginVertical: 10 }} error={emptyDNI} />
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{ marginVertical: 10 }} error={emptyTel} />
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <View style={{ marginVertical: 10 }}>
+            <DatePickerInput
+              locale="sv"
+              label="Birthdate"
+              value={inputDate}
+              mode="outlined"
+              onChange={(d) => setInputDate(d)}
+              inputMode="start"
+              withModal={false}
+              style={{ display: "flex", marginVertical: 10 }}
+            // other react native TextInput props             
+            />
+          </View>
+        </Animated.View>
+        <Text variant="labelLarge" className="text-left my-1" style={{ color: error ? theme.colors.error : theme.colors.primary }}>{errorMessage}</Text>
+        <Animated.View
+          entering={FlipInYRight.delay(200)}
+          exiting={ZoomOut}
+        >
+          <Button mode="contained" onPress={() => {
+            handleSubmmit()
+          }} style={{ marginVertical: 20 }}>
+            Actualizar <MaterialCommunityIcons name="upload" size={16} color={theme.colors.background} />
+          </Button>
+        </Animated.View>
+        <Animated.View
+          entering={FlipInYRight.delay(200)}
+          exiting={ZoomOut}
+        >
+          <Button mode="contained" onPress={() => {
+            props.navigation.goBack()
+            doctorStore.setIsError(false)
+            doctorStore.setErrorMessage("")
+          }} style={{ marginVertical: 10, backgroundColor: theme.colors.error }}>
+            Regresar <MaterialCommunityIcons name="arrow-left" size={16} color={theme.colors.background} />
+          </Button>
+        </Animated.View>
       </KeyboardAvoidingView>
-      
+
 
     </Screen>
   )

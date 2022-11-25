@@ -19,6 +19,7 @@ import {
   registerTranslation,
 } from 'react-native-paper-dates'
 import DropDown from "react-native-paper-dropdown"
+import Animated, { FlipInYRight, ZoomIn, ZoomOut } from "react-native-reanimated"
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)
@@ -64,7 +65,7 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
     setComment(appointment.getComment)
     if (appointment.getDate != null) {
       setInputDate(new Date(appointment.getDate))
-    }else{
+    } else {
       setInputDate(null)
     }
     setIsLoading(false)
@@ -78,34 +79,34 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
   const handleSubmmit = () => {
     if (patient == null) {
       setEmptyPatient(true)
-    }else{
+    } else {
       setEmptyPatient(false)
     }
     if (inputDate == null) {
       setEmptyDate(true)
-    }else{
+    } else {
       setEmptyDate(false)
     }
     if (time == null) {
       setEmptyTime(true)
-    }else{
+    } else {
       setEmptyTime(false)
     }
     if (comment == "") {
       setEmptyComment(true)
-    }else{
+    } else {
       setEmptyComment(false)
     }
     if (patient != null && inputDate != null && time != null && comment != "") {
       setErrorEmpty(false)
       setErrorEmptyMessage("")
       const token = authStore.getAuthToken
-      doctorStore.updateAppointment(appointment.getId ,patient, inputDate.toLocaleDateString("sv"), time, comment, token)
+      doctorStore.updateAppointment(appointment.getId, patient, inputDate.toLocaleDateString("sv"), time, comment, token)
       setErrorMessage(doctorStore.getErrorMessage)
       setError(doctorStore.getIsError)
       setErrorEmpty(false)
       setErrorEmptyMessage("")
-    }else{
+    } else {
       setErrorEmpty(true)
       setErrorEmptyMessage("Por favor, llene todos los campos")
     }
@@ -118,13 +119,13 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
   const onConfirm1 = React.useCallback(
     ({ hours, minutes }) => {
       setVisible1(false);
-      if(minutes >= 10 && hours >= 10){
+      if (minutes >= 10 && hours >= 10) {
         setTime(`${hours}:${minutes}`)
-      }else if(minutes < 10 && hours >= 10){
+      } else if (minutes < 10 && hours >= 10) {
         setTime(`${hours}:0${minutes}`)
-      }else if(minutes >= 10 && hours < 10){
+      } else if (minutes >= 10 && hours < 10) {
         setTime(`0${hours}:${minutes}`)
-      }else{
+      } else {
         setTime(`0${hours}:0${minutes}`)
       }
     },
@@ -136,26 +137,26 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
     backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
-  
+
   const $screenContentContainer: ViewStyle = {
     flex: 1,
     paddingBottom: 50,
   }
-  
+
   const $mainContainer: ViewStyle = {
     flex: 1,
     width: "100%",
     height: "100%",
-    justifyContent: "center",   
+    justifyContent: "center",
   }
 
   const $mainTitle: TextStyle = {
     color: theme.colors.primary,
-  } 
+  }
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
@@ -168,86 +169,118 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
       preset="fixed"
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
-    >     
-      <StatusBar backgroundColor={theme.colors.background}/>
+    >
+      <StatusBar backgroundColor={theme.colors.background} />
       <KeyboardAvoidingView behavior={'height'} enabled style={$mainContainer}>
-      <TimePickerModal
-        // @ts-ignore
-        clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color={theme.colors.onBackground}/>}
-        // @ts-ignore
-        keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color={theme.colors.onBackground}/>}
-        visible={visible1}
-        onDismiss={onDismiss1}
-        onConfirm={onConfirm1}
-        hours={9} // default: current hours
-        minutes={0} // default: current minutes
-        label="Hora de la cita" // optional, default 'Select time'
-        uppercase={false} // optional, default is true
-        cancelLabel="Cancel" // optional, default: 'Cancel'
-        confirmLabel="Ok" // optional, default: 'Ok'
-        animationType="fade" // optional, default is 'none'
-        locale="fr" // optional, default is automically detected by your system
+        <TimePickerModal
+          // @ts-ignore
+          clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color={theme.colors.onBackground} />}
+          // @ts-ignore
+          keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color={theme.colors.onBackground} />}
+          visible={visible1}
+          onDismiss={onDismiss1}
+          onConfirm={onConfirm1}
+          hours={9} // default: current hours
+          minutes={0} // default: current minutes
+          label="Hora de la cita" // optional, default 'Select time'
+          uppercase={false} // optional, default is true
+          cancelLabel="Cancel" // optional, default: 'Cancel'
+          confirmLabel="Ok" // optional, default: 'Ok'
+          animationType="fade" // optional, default is 'none'
+          locale="fr" // optional, default is automically detected by your system
         // keyboardIcon="keyboard-outline" // optional, default is "keyboard-outline"
         // clockIcon="clock-outline" // optional, default is "clock-outline"
-      /> 
-      <Text variant="displayMedium" className="text-center" style={$mainTitle}>Editar Cita</Text>
-      <DropDown
-              label={"Paciente"}
-              mode={"outlined"}
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={patient}
-              setValue={setPatient}
-              list={patientList}
+        />
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <Text variant="displayMedium" className="text-center" style={$mainTitle}>Editar Cita</Text>
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <DropDown
+            label={"Paciente"}
+            mode={"outlined"}
+            visible={showDropDown}
+            showDropDown={() => setShowDropDown(true)}
+            onDismiss={() => setShowDropDown(false)}
+            value={patient}
+            setValue={setPatient}
+            list={patientList}
+          />
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <TextInput label="Hora de la cita" value={time} onChangeText={setTime} mode="outlined" style={{ marginVertical: 10, backgroundColor: theme.colors.background, width: "70%" }} error={emptyTime} disabled />
+            <Button mode="contained" onPress={() => setVisible1(true)} style={{ width: "23%", height: 40, padding: 0, itemsAlign: "center", justifyContent: "center", backgroundColor: theme.colors.primary, marginVertical: 10 }}><MaterialCommunityIcons name="clock-outline" size={20} color={theme.colors.background} /></Button>
+          </View>
+        </Animated.View>
+
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <View style={{ marginVertical: 10 }}>
+            <DatePickerInput
+              locale="sv"
+              label="Birthdate"
+              value={inputDate}
+              mode="outlined"
+              onChange={(d) => setInputDate(d)}
+              inputMode="start"
+              withModal={false}
+              style={{ display: "flex", marginVertical: 10 }}
+            // other react native TextInput props             
             />
-            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-              <TextInput label="Hora de la cita" value={time} onChangeText={setTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.background, width: "70%"}} error={emptyTime} disabled/>
-              <Button mode="contained" onPress={() => setVisible1(true)} style={{width: "23%", height: 40, padding: 0, itemsAlign: "center", justifyContent: "center", backgroundColor: theme.colors.primary, marginVertical: 10}}><MaterialCommunityIcons name="clock-outline" size={20} color= {theme.colors.background} /></Button>
-            </View>
+          </View>
+        </Animated.View>
+        <Animated.View
+          entering={ZoomIn.delay(200)}
+          exiting={ZoomOut}
+        >
+          <TextInput
+            label="Comentario"
+            value={comment}
+            onChangeText={setComment}
+            mode="outlined"
+            style={{ marginVertical: 10, backgroundColor: theme.colors.background }}
+            error={emptyComment}
+            multiline={true}
+            numberOfLines={4}
+          />
+        </Animated.View>
 
-            <View style={{marginVertical: 10}}>
-              <DatePickerInput
-                locale="sv"
-                label="Birthdate"
-                value={inputDate}
-                mode="outlined"
-                onChange={(d) => setInputDate(d)}
-                inputMode="start"
-                withModal={false}
-                style={{display: "flex", marginVertical: 10}}
-                // other react native TextInput props             
-              />
-            </View>
-
-            <TextInput 
-              label="Comentario" 
-              value={comment} 
-              onChangeText={setComment} 
-              mode="outlined" 
-              style={{marginVertical: 10, backgroundColor: theme.colors.background}} 
-              error={emptyComment} 
-              multiline={true} 
-              numberOfLines={4} 
-            />
-
-            <Text variant="labelLarge" className="text-left mb-3" style={{color: theme.colors.error}}>{errorEmpty ? errorEmptyMessage : ""}</Text>
-        <Text variant="labelLarge" className="text-left my-1" style={{color: error ? theme.colors.error : theme.colors.primary}}>{errorMessage}</Text>
-        <Button mode="contained" onPress={() => {
-          handleSubmmit()
-        }} style={{marginVertical: 20}}>
-          Actualizar <MaterialCommunityIcons name="upload" size={16} color= {theme.colors.background} />
-        </Button>
-        <Button mode="contained" onPress={() => {
-          props.navigation.goBack()
-          doctorStore.setIsError(false)
-          doctorStore.setErrorMessage("")
-        }} style={{marginVertical: 10, backgroundColor: theme.colors.error}}>
-          Regresar <MaterialCommunityIcons name="arrow-left" size={16} color= {theme.colors.background} />
-        </Button>
+        <Text variant="labelLarge" className="text-left mb-3" style={{ color: theme.colors.error }}>{errorEmpty ? errorEmptyMessage : ""}</Text>
+        <Text variant="labelLarge" className="text-left my-1" style={{ color: error ? theme.colors.error : theme.colors.primary }}>{errorMessage}</Text>
+        <Animated.View
+          entering={FlipInYRight.delay(200)}
+          exiting={ZoomOut}
+        >
+          <Button mode="contained" onPress={() => {
+            handleSubmmit()
+          }} style={{ marginVertical: 20 }}>
+            Actualizar <MaterialCommunityIcons name="upload" size={16} color={theme.colors.background} />
+          </Button>
+        </Animated.View>
+        <Animated.View
+          entering={FlipInYRight.delay(200)}
+          exiting={ZoomOut}
+        >
+          <Button mode="contained" onPress={() => {
+            props.navigation.goBack()
+            doctorStore.setIsError(false)
+            doctorStore.setErrorMessage("")
+          }} style={{ marginVertical: 10, backgroundColor: theme.colors.error }}>
+            Regresar <MaterialCommunityIcons name="arrow-left" size={16} color={theme.colors.background} />
+          </Button>
+        </Animated.View>
       </KeyboardAvoidingView>
-      
-
     </Screen>
   )
 })

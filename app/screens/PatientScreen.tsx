@@ -21,6 +21,7 @@ import {
   enGB,
   registerTranslation,
 } from 'react-native-paper-dates'
+import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated"
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)
@@ -76,23 +77,23 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
 
   const handleSubmmit = () => {
     if (name === "") {
-      setEmptyName(true)  
-    }else{
+      setEmptyName(true)
+    } else {
       setEmptyName(false)
     }
     if (DNI === "") {
       setEmptyDNI(true)
-    }else{
+    } else {
       setEmptyDNI(false)
     }
     if (tel === "") {
       setEmptyTel(true)
-    }else{
+    } else {
       setEmptyTel(false)
     }
     if (inputDate === null) {
       setEmptyDate(true)
-    }else{
+    } else {
       setEmptyDate(false)
     }
     if (name !== "" && DNI !== "" && tel !== "" && inputDate !== null) {
@@ -144,28 +145,28 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
   }
-  
+
   const $screenContentContainer: ViewStyle = {
     flex: 1,
     paddingBottom: 15,
   }
-  
+
   const $mainContainer: ViewStyle = {
     flex: 1,
     width: "100%",
     height: "100%",
-    justifyContent: "flex-start",  
-    paddingTop: 5, 
+    justifyContent: "flex-start",
+    paddingTop: 5,
   }
 
   const $mainTitle: TextStyle = {
     color: theme.colors.onBackground,
     marginBottom: 5,
-  } 
+  }
 
   const $modalStyle = {
     backgroundColor: theme.colors.background,
-    padding: 20, 
+    padding: 20,
     zIndex: 100,
     marginHorizontal: 20,
     borderRadius: 5,
@@ -181,16 +182,16 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
     height: 50,
   }
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
         <ActivityIndicator animating={true} color={MD2Colors.purple700} />
         <Text>Cargando...</Text>
       </View>
     )
   }
 
-  
+
   return (
     <Screen
       style={$root}
@@ -198,77 +199,82 @@ export const PatientScreen: FC<StackScreenProps<AppStackScreenProps, "Patient">>
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContentContainer}
     >
-      <StatusBar backgroundColor={theme.colors.background}/>
+      <StatusBar backgroundColor={theme.colors.background} />
       <View style={$mainContainer}>
-      <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={$modalStyle}>
-          <View style={{position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100}}>
-            <TouchableOpacity onPress={hideModal} style={$closeButton}>
-              <MaterialCommunityIcons name="close" size={34} color={theme.colors.surface} />
-            </TouchableOpacity>
-          </View>
-          <KeyboardAvoidingView behavior={'height'} enabled>
-            <Text variant="headlineMedium" className="mb-3">Agregar Paciente</Text>
-            <Text variant="labelLarge" className="text-left mb-3" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
-            <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{marginVertical: 10}} error={emptyName}/>
-            <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{marginVertical: 10}} error={emptyDNI}/>
-            <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{marginVertical: 10}} error={emptyTel}/>
-            <DatePickerInput
-              locale="sv"
-              label="Birthdate"
-              value={inputDate}
-              mode="outlined"
-              onChange={(d) => setInputDate(d)}
-              inputMode="start"
-              withModal={false}
+        <Portal>
+          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={$modalStyle}>
+            <View style={{ position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100 }}>
+              <TouchableOpacity onPress={hideModal} style={$closeButton}>
+                <MaterialCommunityIcons name="close" size={34} color={theme.colors.surface} />
+              </TouchableOpacity>
+            </View>
+            <KeyboardAvoidingView behavior={'height'} enabled>
+              <Text variant="headlineMedium" className="mb-3">Agregar Paciente</Text>
+              <Text variant="labelLarge" className="text-left mb-3" style={{ color: theme.colors.onSurface }}>{errorMessage}</Text>
+              <TextInput label="Nombre" value={name} onChangeText={setName} mode="outlined" style={{ marginVertical: 10 }} error={emptyName} />
+              <TextInput label="DNI" value={DNI} onChangeText={setDNI} mode="outlined" style={{ marginVertical: 10 }} error={emptyDNI} />
+              <TextInput label="Tel" value={tel} onChangeText={setTel} mode="outlined" style={{ marginVertical: 10 }} error={emptyTel} />
+              <DatePickerInput
+                locale="sv"
+                label="Birthdate"
+                value={inputDate}
+                mode="outlined"
+                onChange={(d) => setInputDate(d)}
+                inputMode="start"
+                withModal={false}
               // other react native TextInput props             
-            />
-            <Text variant="labelSmall" style={{marginTop: 10, color: theme.colors.error}}>{emptyDate ? "Debe ingresar una fecha de nacimiento" : ""}</Text>
-            <Button mode="contained" onPress={() => {
-              handleSubmmit()
-            }} style={{marginVertical: 20}}>
-              Agregar
-            </Button>
-          </KeyboardAvoidingView>
-        </Modal>
-      </Portal>
-      <Portal>
-        <Modal visible={visibleDelete} onDismiss={hideModalDelete} contentContainerStyle={$modalStyle}>
-          <View style={{position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100}}>
-            <TouchableOpacity onPress={hideModalDelete} style={$closeButton}>
-              <MaterialCommunityIcons name="close" size={34} color={theme.colors.surface} />
-            </TouchableOpacity>
-          </View>
-          <KeyboardAvoidingView behavior={'height'} enabled>
-            <Text variant="headlineMedium" className="mb-3">Eliminar Paciente</Text>
-            <Text variant="labelLarge" className="text-left my-1" style={{color: theme.colors.onSurface }}>¿Está seguro que desea eliminar al paciente {selectedPatient?.getName}?</Text>
-            
-            <Button mode="contained" onPress={() => {
-              handleConfirmDelete()
-            }} style={{marginVertical: 20}}>
-              Eliminar
-            </Button>
-          </KeyboardAvoidingView>
-        </Modal>
-      </Portal>
-        <View style={{position: "absolute", top: 0, right: 0, padding: 5}}>
+              />
+              <Text variant="labelSmall" style={{ marginTop: 10, color: theme.colors.error }}>{emptyDate ? "Debe ingresar una fecha de nacimiento" : ""}</Text>
+              <Button mode="contained" onPress={() => {
+                handleSubmmit()
+              }} style={{ marginVertical: 20 }}>
+                Agregar
+              </Button>
+            </KeyboardAvoidingView>
+          </Modal>
+        </Portal>
+        <Portal>
+          <Modal visible={visibleDelete} onDismiss={hideModalDelete} contentContainerStyle={$modalStyle}>
+            <View style={{ position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100 }}>
+              <TouchableOpacity onPress={hideModalDelete} style={$closeButton}>
+                <MaterialCommunityIcons name="close" size={34} color={theme.colors.surface} />
+              </TouchableOpacity>
+            </View>
+            <KeyboardAvoidingView behavior={'height'} enabled>
+              <Text variant="headlineMedium" className="mb-3">Eliminar Paciente</Text>
+              <Text variant="labelLarge" className="text-left my-1" style={{ color: theme.colors.onSurface }}>¿Está seguro que desea eliminar al paciente {selectedPatient?.getName}?</Text>
+
+              <Button mode="contained" onPress={() => {
+                handleConfirmDelete()
+              }} style={{ marginVertical: 20 }}>
+                Eliminar
+              </Button>
+            </KeyboardAvoidingView>
+          </Modal>
+        </Portal>
+        <View style={{ position: "absolute", top: 0, right: 0, padding: 5 }}>
           <ToggleButton
             icon={() => <MaterialCommunityIcons name="plus" size={24} color={theme.colors.background} />}
             value="theme"
-            style={{backgroundColor: theme.colors.secondary, zIndex: 100, marginTop: 5}}
+            style={{ backgroundColor: theme.colors.secondary, zIndex: 100, marginTop: 5 }}
             onPress={handleAdd}
           />
         </View>
-        <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Pacientes</Text>
-        <Text variant="labelLarge" className="text-left mb-4" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
+        <Animated.View
+          entering={ZoomIn}
+          exiting={ZoomOut}
+        >
+          <Text variant="displayMedium" className="text-center font-bold" style={$mainTitle}>Pacientes</Text>
+        </Animated.View>
+        <Text variant="labelLarge" className="text-left mb-4" style={{ color: theme.colors.onSurface }}>{errorMessage}</Text>
         <FlatList<Patient>
-          style={{flex: 1, width: "100%"}}
+          style={{ flex: 1, width: "100%" }}
           data={doctorStore.getPatientsList}
-          contentContainerStyle={{paddingBottom: 5}}
+          contentContainerStyle={{ paddingBottom: 5 }}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({item}) => (
-            <View style={{flex: 1, width: "100%", marginBottom: 15}}>
-              <PatientCard patient={item} onDelete={handleDelete} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} />
+          renderItem={({ item, index }) => (
+            <View style={{ flex: 1, width: "100%", marginBottom: 15 }}>
+              <PatientCard patient={item} index={index} onDelete={handleDelete} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} />
             </View>
           )}
         />

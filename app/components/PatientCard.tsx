@@ -8,12 +8,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { AppContext } from '../context/AppContextProvider.js'
 import { Patient } from "../models/Patient"
+import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
 
 export interface PatientCardProps {
   /**
    * An optional style override useful for padding & margin.
    */
   patient: Patient
+  index: number
   onDelete: () => void
   selectedPatient: Patient
   setSelectedPatient: (patient: Patient) => void
@@ -23,7 +25,7 @@ export interface PatientCardProps {
  * Describe your component here
  */
 export const PatientCard = observer(function PatientCard(props: PatientCardProps) {
-  const { patient, onDelete, selectedPatient, setSelectedPatient } = props
+  const { patient, onDelete, selectedPatient, setSelectedPatient, index } = props
   const { authStore, doctorStore, themeStore } = useStores()
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
@@ -35,7 +37,7 @@ export const PatientCard = observer(function PatientCard(props: PatientCardProps
     setSelectedPatient(patient)
     onDelete()
   }
-  
+
   const $card: ViewStyle = {
     backgroundColor: theme.colors.secondary,
     borderRadius: 20,
@@ -66,33 +68,38 @@ export const PatientCard = observer(function PatientCard(props: PatientCardProps
   }
 
   return (
-    <TouchableOpacity onPress={patient.navigate}>
-      <View style={$card}>
-        <View style={{position: "absolute", top: 0, right: 0, padding: 0}}>
-          <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
-            <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
-          </TouchableOpacity>
-        </View>
-        <View className="w-9/12">
-          <Text variant="headlineSmall" style={$cardText}>{patient.getName}</Text>
-        </View>
-        <View className="flex flex-row justify-between">
-          <View className="w-1/3 items-center justify-center">
-            <MaterialCommunityIcons name="account-outline" size={120} color={$cardText.color} />
+    <Animated.View
+      entering={FadeInRight.delay(index * 300)}
+      exiting={FadeInLeft.delay(index * 300)}
+    >
+      <TouchableOpacity onPress={patient.navigate}>
+        <View style={$card}>
+          <View style={{ position: "absolute", top: 0, right: 0, padding: 0 }}>
+            <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
+              <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
+            </TouchableOpacity>
           </View>
-          <View className="w-2/3 items-center justify-center">
-            <View className="" style={$horasItem}>
-              <Text variant="labelLarge" style={$cardText}>DNI: {patient.getDni} </Text>
+          <View className="w-9/12">
+            <Text variant="headlineSmall" style={$cardText}>{patient.getName}</Text>
+          </View>
+          <View className="flex flex-row justify-between">
+            <View className="w-1/3 items-center justify-center">
+              <MaterialCommunityIcons name="account-outline" size={120} color={$cardText.color} />
             </View>
-            <View className="" style={$horasItem}>
-              <Text variant="labelLarge" style={$cardText}>F. Nacimiento: {patient.getBirthday}</Text>
-            </View>
-            <View className="" style={$horasItem}>
-              <Text variant="labelLarge" style={$cardText}>Contacto: {patient.getPhone}</Text>
+            <View className="w-2/3 items-center justify-center">
+              <View className="" style={$horasItem}>
+                <Text variant="labelLarge" style={$cardText}>DNI: {patient.getDni} </Text>
+              </View>
+              <View className="" style={$horasItem}>
+                <Text variant="labelLarge" style={$cardText}>F. Nacimiento: {patient.getBirthday}</Text>
+              </View>
+              <View className="" style={$horasItem}>
+                <Text variant="labelLarge" style={$cardText}>Contacto: {patient.getPhone}</Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Animated.View>
   )
 })
