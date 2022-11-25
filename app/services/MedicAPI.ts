@@ -1,7 +1,8 @@
 import axios from 'axios';
+import config from '../../config'
 
 export const MedicAPI = axios.create({
-    baseURL: 'http://192.168.1.1:80/api',
+    baseURL: config.API_URL,
     headers: {
         'Accept': 'application/json'
     }

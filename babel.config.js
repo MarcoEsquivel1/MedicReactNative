@@ -6,6 +6,7 @@ const plugins = [
     },
   ],
   ["@babel/plugin-proposal-optional-catch-binding"],
+  ["module:react-native-dotenv"],
   'react-native-paper/babel',
   "tailwindcss-react-native/babel",
   "react-native-reanimated/plugin", // NOTE: this must be last in the plugins
