@@ -228,10 +228,17 @@ export const DoctorStoreModel = types
         return null
       }
     },
+    getPatientsIdandNames() {
+      //create array list with id and name of patients
+      const patientsIdandNames = []
+      self.patientsList.forEach((patient: Patient) => {
+        patientsIdandNames.push({label: patient.name, value: patient.id})
+      })
+      return patientsIdandNames
+    },
     async getAppointments(token: string) {
       this.setIsLoading(true)
       const response = await MedicApiService.getAppointments("Bearer " + token)
-      console.log(response)
       if (response.status === 200) {
         this.setErrorMessage("")
         this.setIsError(false)
@@ -253,6 +260,56 @@ export const DoctorStoreModel = types
         this.setIsLoading(false)
       }, 500)
     },
+    async addAppointment(patient_id: number, date: string, time: string, comment: string, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.addAppointment("Bearer " + token, patient_id, date, time, comment)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const appointments = response.data        
+        const mappedAppointments = appointments.map(mapAppointment)
+        self.setProp("appointmentsList", [])
+        self.setProp("appointmentsList", mappedAppointments)
+        
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    },
+    async deleteAppointment(id: number, token: string) {
+      this.setIsLoading(true)
+      const response = await MedicApiService.deleteAppointment("Bearer " + token, id)
+      if (response.status === 200) {
+        this.setErrorMessage(response.message)
+        this.setIsError(false)
+        const appointments = response.data        
+        const mappedAppointments = appointments.map(mapAppointment)
+        self.setProp("appointmentsList", [])
+        self.setProp("appointmentsList", mappedAppointments)
+        
+      }else{
+        if(response.status === 422){
+          this.setIsError(true);
+          this.setErrorMessage(response.data.message);
+        }else{
+          this.setIsError(true);
+          this.setErrorMessage("Ha ocurrido un error inesperado");
+        }
+      }
+      //delay
+      setTimeout(() => {
+        this.setIsLoading(false)
+      }, 500)
+    }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface DoctorStore extends Instance<typeof DoctorStoreModel> {}

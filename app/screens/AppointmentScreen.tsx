@@ -24,12 +24,14 @@ import {
 } from 'react-native-paper-dates'
 import { AppointmentCard } from "../components/AppointmentCard"
 import { Appointment } from "../models/Appointment"
+import DropDown from "react-native-paper-dropdown";
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)
 registerTranslation('pt', pt)
 registerTranslation('de', de)
 registerTranslation('en-GB', enGB)
+
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
@@ -41,7 +43,21 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
   const [error, setError] = useState(false)
   const [visible, setVisible] = React.useState(false);
   const [visibleDelete, setVisibleDelete] = React.useState(false);
-
+  const [showDropDown, setShowDropDown] = useState(false);
+  const [patient, setPatient] = useState(null);
+  const [patientList, setPatientList] = useState([]);
+  const [emptyPatient, setEmptyPatient] = useState(false);
+  const [inputDate, setInputDate] = React.useState<Date | null>(null);
+  const [emptyDate, setEmptyDate] = useState(false)
+  const [time, setTime] = useState(null)
+  const [emptyTime, setEmptyTime] = useState(false)
+  const [visible1, setVisible1] = useState(false)
+  const [comment, setComment] = useState("")
+  const [emptyComment, setEmptyComment] = useState(false)
+  const [errorEmpty, setErrorEmpty] = useState(false)
+  const [errorEmptyMessage, setErrorEmptyMessage] = useState("")
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+  
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
@@ -58,12 +74,73 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
   }
 
   const handleConfirmDelete = () => {
-  
+    if(selectedAppointment != null){
+      const token = authStore.getAuthToken
+      doctorStore.deleteAppointment(selectedAppointment.id, token)
+      hideModalDelete()
+      setSelectedAppointment(null)
+    }
   }
 
   const handleSubmmit = () => {
-    
+    if (patient == null) {
+      setEmptyPatient(true)
+    }else{
+      setEmptyPatient(false)
+    }
+    if (inputDate == null) {
+      setEmptyDate(true)
+    }else{
+      setEmptyDate(false)
+    }
+    if (time == null) {
+      setEmptyTime(true)
+    }else{
+      setEmptyTime(false)
+    }
+    if (comment == "") {
+      setEmptyComment(true)
+    }else{
+      setEmptyComment(false)
+    }
+    if (patient != null && inputDate != null && time != null && comment != "") {
+      setErrorEmpty(false)
+      setErrorEmptyMessage("")
+      const token = authStore.getAuthToken
+      doctorStore.addAppointment(patient, inputDate.toLocaleDateString("sv"), time, comment, token)
+      setErrorMessage(doctorStore.getErrorMessage)
+      setError(doctorStore.getIsError)
+      setPatient(null);
+      setInputDate(null);
+      setTime(null);
+      setComment("");
+      setErrorEmpty(false)
+      setErrorEmptyMessage("")
+    }else{
+      setErrorEmpty(true)
+      setErrorEmptyMessage("Por favor, llene todos los campos")
+    }
   }
+
+  const onDismiss1 = React.useCallback(() => {
+    setVisible1(false)
+  }, [setVisible1])
+
+  const onConfirm1 = React.useCallback(
+    ({ hours, minutes }) => {
+      setVisible1(false);
+      if(minutes >= 10 && hours >= 10){
+        setTime(`${hours}:${minutes}`)
+      }else if(minutes < 10 && hours >= 10){
+        setTime(`${hours}:0${minutes}`)
+      }else if(minutes >= 10 && hours < 10){
+        setTime(`0${hours}:${minutes}`)
+      }else{
+        setTime(`0${hours}:0${minutes}`)
+      }
+    },
+    [setVisible1]
+  );
 
   // @ts-ignore
   const { theme, setTheme } = useContext(AppContext)
@@ -85,10 +162,12 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     doctorStore.setErrorMessage("")
     setErrorMessage(doctorStore.getErrorMessage)
     setError(doctorStore.getIsError)
-    /* setEmptyDNI(false)
-    setEmptyName(false)
-    setEmptyTel(false)
-    setEmptyDate(false) */
+    setPatient(null);
+    setInputDate(null);
+    setTime(null);
+    setComment("");
+    setErrorEmpty(false)
+    setErrorEmptyMessage("")
   }, [visible])
 
   useEffect(() => {
@@ -96,7 +175,9 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     doctorStore.setIsError(false)
     doctorStore.setErrorMessage("")
     const token = authStore.getAuthToken
+    doctorStore.getPatients(token)
     doctorStore.getAppointments(token)
+    setPatientList(doctorStore.getPatientsIdandNames)
   }, []);
 
   const $root: ViewStyle = {
@@ -160,6 +241,25 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
     >
       <StatusBar backgroundColor={theme.colors.background}/>
       <View style={$mainContainer}>
+      <TimePickerModal
+        // @ts-ignore
+        clockIcon={() => <MaterialCommunityIcons name="clock" size={24} color={theme.colors.onBackground}/>}
+        // @ts-ignore
+        keyboardIcon={() => <MaterialCommunityIcons name="keyboard" size={24} color={theme.colors.onBackground}/>}
+        visible={visible1}
+        onDismiss={onDismiss1}
+        onConfirm={onConfirm1}
+        hours={9} // default: current hours
+        minutes={0} // default: current minutes
+        label="Hora de la cita" // optional, default 'Select time'
+        uppercase={false} // optional, default is true
+        cancelLabel="Cancel" // optional, default: 'Cancel'
+        confirmLabel="Ok" // optional, default: 'Ok'
+        animationType="fade" // optional, default is 'none'
+        locale="fr" // optional, default is automically detected by your system
+        // keyboardIcon="keyboard-outline" // optional, default is "keyboard-outline"
+        // clockIcon="clock-outline" // optional, default is "clock-outline"
+      /> 
       <Portal>
         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={$modalStyle}>
           <View style={{position: "absolute", top: 0, right: 0, width: 50, height: 50, zIndex: 100}}>
@@ -172,6 +272,45 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
             <Text variant="labelLarge" className="text-left mb-3" style={{color: theme.colors.onSurface}}>{errorMessage}</Text>
             {/* Contenido add */}
             
+            <DropDown
+              label={"Paciente"}
+              mode={"outlined"}
+              visible={showDropDown}
+              showDropDown={() => setShowDropDown(true)}
+              onDismiss={() => setShowDropDown(false)}
+              value={patient}
+              setValue={setPatient}
+              list={patientList}
+            />
+            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+              <TextInput label="Hora de la cita" value={time} onChangeText={setTime} mode="outlined" style={{marginVertical: 10, backgroundColor: theme.colors.background, width: "70%"}} error={emptyTime} disabled/>
+              <Button mode="contained" onPress={() => setVisible1(true)} style={{width: "23%", height: 40, padding: 0, itemsAlign: "center", justifyContent: "center", backgroundColor: theme.colors.primary, marginVertical: 10}}><MaterialCommunityIcons name="clock-outline" size={20} color= {theme.colors.background} /></Button>
+            </View>
+
+            <DatePickerInput
+              locale="sv"
+              label="Fecha"
+              value={inputDate}
+              mode="outlined"
+              onChange={(d) => setInputDate(d)}
+              inputMode="start"
+              withModal={false}
+              // other react native TextInput props             
+            />
+
+            <TextInput 
+              label="Comentario" 
+              value={comment} 
+              onChangeText={setComment} 
+              mode="outlined" 
+              style={{marginVertical: 10, backgroundColor: theme.colors.background}} 
+              error={emptyComment} 
+              multiline={true} 
+              numberOfLines={4} 
+            />
+
+            <Text variant="labelLarge" className="text-left mb-3" style={{color: theme.colors.error}}>{errorEmpty ? errorEmptyMessage : ""}</Text>
+
             <Button mode="contained" onPress={() => {
               handleSubmmit()
             }} style={{marginVertical: 20}}>
@@ -189,7 +328,7 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
           </View>
           <KeyboardAvoidingView behavior={'height'} enabled>
             <Text variant="headlineMedium" className="mb-3">Eliminar Cita</Text>
-            <Text variant="labelLarge" className="text-left my-1" style={{color: theme.colors.onSurface }}>¿Está seguro que desea eliminar?</Text>
+            <Text variant="labelLarge" className="text-left my-1" style={{color: theme.colors.onSurface }}>¿Está seguro que desea eliminar la cita con fecha: {selectedAppointment?.getDate} y hora: {selectedAppointment?.getTime}?</Text>
             
             <Button mode="contained" onPress={() => {
               handleConfirmDelete()
@@ -220,7 +359,7 @@ export const AppointmentScreen: FC<StackScreenProps<AppStackScreenProps, "Appoin
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => (
             <View style={{flex: 1, width: "100%", marginBottom: 15}}>
-              <AppointmentCard appointment={item} />
+              <AppointmentCard appointment={item} onDelete={handleDelete} selectedAppointment={selectedAppointment} setSelectedAppointment={setSelectedAppointment} />
             </View>
           )}
         />

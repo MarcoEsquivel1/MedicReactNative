@@ -91,7 +91,6 @@ export default class MedicApiService {
             });
             return response.data;
         } catch (error) {
-            console.log(error.response);
             return error.response;
         }
     }
@@ -150,6 +149,37 @@ export default class MedicApiService {
     static async getAppointments(token: string) {
         try {
             const response = await MedicAPI.get('/appointments', {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    static async addAppointment(token: string, patient_id: number, date: string, time: string, comment: string) {
+        try {
+            const response = await MedicAPI.post('/appointments', {
+                patient_id,
+                date,
+                time,
+                comment
+            }, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    static async deleteAppointment(token: string, id: number) {
+        try {
+            const response = await MedicAPI.delete(`/appointments?id=${id}`, {
                 headers: {
                     'Authorization': token
                 }

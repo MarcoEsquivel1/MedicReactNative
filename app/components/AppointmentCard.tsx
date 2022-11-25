@@ -17,13 +17,16 @@ export interface AppointmentCardProps {
    * An optional style override useful for padding & margin.
    */
   appointment: Appointment
+  onDelete: () => void
+  selectedAppointment: Appointment
+  setSelectedAppointment: (appointment: Appointment) => void
 }
 
 /**
  * Describe your component here
  */
 export const AppointmentCard = observer(function AppointmentCard(props: AppointmentCardProps) {
-  const { appointment } = props
+  const { appointment, onDelete, setSelectedAppointment } = props
   const { authStore, doctorStore, themeStore } = useStores()
   const [patient, setPatient] = useState<Patient | null>(null)
   // @ts-ignore
@@ -36,6 +39,11 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
     //find patient name
     setPatient(doctorStore.findPatient(appointment.getPatientId))
   }, []);
+
+  const $onPressDelete = () => {
+    setSelectedAppointment(appointment)
+    onDelete()
+  }
 
   const $card: ViewStyle = {
     backgroundColor: theme.colors.secondary,
@@ -80,7 +88,7 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
   return (
     <View style={$card}>
           <View style={{position: "absolute", top: 0, right: 0, padding: 0}}>
-            <TouchableOpacity onPress={()=>{}} style={$deleteButton}>
+            <TouchableOpacity onPress={$onPressDelete} style={$deleteButton}>
               <MaterialCommunityIcons name="trash-can-outline" size={34} color={theme.colors.surface} />
             </TouchableOpacity>
           </View>
