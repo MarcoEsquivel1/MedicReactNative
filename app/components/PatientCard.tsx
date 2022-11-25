@@ -1,13 +1,11 @@
 import { observer } from "mobx-react-lite"
 import React, {
-  FC, useEffect, useState, useContext
+  FC, useEffect, useContext
 } from "react"
-import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView, TouchableOpacity, } from "react-native"
-import { Screen } from "../components"
-import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton } from "react-native-paper"
+import { TextStyle, View, ViewStyle, TouchableOpacity, } from "react-native"
+import { Text } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
-import { TimePickerModal } from 'react-native-paper-dates'
 import { AppContext } from '../context/AppContextProvider.js'
 import { Patient } from "../models/Patient"
 

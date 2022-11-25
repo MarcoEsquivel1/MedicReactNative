@@ -4,7 +4,7 @@ import React, {
 } from "react"
 import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView } from "react-native"
 import { Screen } from "../components"
-import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton } from "react-native-paper"
+import { ActivityIndicator, MD2Colors, Button, Text, TextInput } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { DatePickerInput, TimePickerModal } from 'react-native-paper-dates'
@@ -19,8 +19,6 @@ import {
   registerTranslation,
 } from 'react-native-paper-dates'
 import DropDown from "react-native-paper-dropdown"
-import { Appointment } from "../models/Appointment"
-import { setDate } from "date-fns"
 registerTranslation('en', en)
 registerTranslation('nl', nl)
 registerTranslation('pl', pl)

@@ -4,15 +4,12 @@ import React, {
 } from "react"
 import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView, TouchableOpacity, } from "react-native"
 import { Screen } from "../components"
-import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton, Modal, Portal } from "react-native-paper"
+import { ActivityIndicator, MD2Colors, Button, Text, TextInput, ToggleButton, Modal, Portal } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { DatePickerInput, TimePickerModal } from 'react-native-paper-dates'
 import { AppContext } from '../context/AppContextProvider.js'
-import { PatientCard } from "../components/PatientCard"
 import { FlatList } from "react-native-gesture-handler"
-import { Patient } from "../models/Patient"
-import { DatePickerModal } from 'react-native-paper-dates';
 import {
   en,
   nl,

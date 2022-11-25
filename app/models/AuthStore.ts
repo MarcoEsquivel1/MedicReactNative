@@ -78,7 +78,6 @@ export const AuthStoreModel = types
       this.setIsLoading(true)
       const response = await MedicApiService.login(self.authUsername, self.authPassword);
       if (response.status === 200) {
-        console.log(response.data.access_token);
         this.setToken(response.data.access_token);
       }else{
         if(response.status === 422){

@@ -4,7 +4,7 @@ import React, {
 } from "react"
 import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView } from "react-native"
 import { Screen } from "../components"
-import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton } from "react-native-paper"
+import { ActivityIndicator, MD2Colors, Button, Text, TextInput, ToggleButton } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
 import { TimePickerModal } from 'react-native-paper-dates'
@@ -255,7 +255,3 @@ export const DoctorScreen: FC<StackScreenProps<AppStackScreenProps, "Doctor">> =
     </Screen>
   )
 })
-
-const $root: ViewStyle = {
-  flex: 1,
-}

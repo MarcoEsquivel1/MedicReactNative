@@ -3,13 +3,11 @@ import React, {
   FC, useEffect, useState, useContext
 } from "react"
 import { TextStyle, View, ViewStyle, StatusBar, KeyboardAvoidingView, TouchableOpacity, } from "react-native"
-import { Screen } from "../components"
-import { ActivityIndicator, MD2Colors, Button, Text, TextInput, useTheme, ToggleButton } from "react-native-paper"
+import { Text } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "../models"
-import { TimePickerModal } from 'react-native-paper-dates'
 import { AppContext } from '../context/AppContextProvider.js'
-import { Patient, PatientModel } from "../models/Patient"
+import { Patient } from "../models/Patient"
 import { Appointment } from "../models/Appointment"
 
 export interface AppointmentCardProps {
@@ -125,7 +123,6 @@ export const AppointmentCard = observer(function AppointmentCard(props: Appointm
             </View>
           </View>
           <View className="w-1/3 items-center justify-center">
-            {/* <MaterialCommunityIcons name="account-outline" size={120} color={$cardText.color} /> */}
           </View>
         </View>
       </View>

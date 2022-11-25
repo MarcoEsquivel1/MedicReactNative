@@ -270,8 +270,7 @@ export const DoctorStoreModel = types
       const pendingAppointments = self.appointmentsList.filter((appointment: Appointment) => appointment.done === 0)
       // @ts-ignore
       self.setProp("pendingAppointmentsList", pendingAppointments)
-      console.log("Se han cargado las citas pendientes")
-    },
+    }, 
     async addAppointment(patient_id: number, date: string, time: string, comment: string, token: string) {
       this.setIsLoading(true)
       const response = await MedicApiService.addAppointment("Bearer " + token, patient_id, date, time, comment)

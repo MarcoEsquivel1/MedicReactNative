@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, {
-  FC, useContext, useEffect, useState,
+  FC, useContext, useEffect,
 } from "react"
 import { TextStyle, View, ViewStyle, StatusBar } from "react-native"
 import { Screen } from "../components"
@@ -23,10 +23,6 @@ export const WelcomeScreen: FC<StackScreenProps<WelcomeScreenProps, "Welcome">> 
   useEffect(() => {
     setTheme(themeStore.getTheme)
   }, [themeStore.theme]);
-
-  /* useEffect(() => {
-    authStore.setToken(undefined)
-  }, []) */
 
   const $root: ViewStyle = {
     flex: 1,
