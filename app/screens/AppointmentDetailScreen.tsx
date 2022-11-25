@@ -200,6 +200,7 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
         <Animated.View
           entering={ZoomIn.delay(200)}
           exiting={ZoomOut}
+          style={{ marginBottom: 15 }}
         >
           <DropDown
             label={"Paciente"}
@@ -215,6 +216,7 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
         <Animated.View
           entering={ZoomIn.delay(200)}
           exiting={ZoomOut}
+          style={{ marginBottom: 5 }}
         >
           <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
             <TextInput label="Hora de la cita" value={time} onChangeText={setTime} mode="outlined" style={{ marginVertical: 10, backgroundColor: theme.colors.background, width: "70%" }} error={emptyTime} disabled />
@@ -226,7 +228,7 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
           entering={ZoomIn.delay(200)}
           exiting={ZoomOut}
         >
-          <View style={{ marginVertical: 10 }}>
+          <View style={{ marginBottom: 10 }}>
             <DatePickerInput
               locale="sv"
               label="Birthdate"
@@ -249,15 +251,15 @@ export const AppointmentDetailScreen: FC<StackScreenProps<AppStackScreenProps, "
             value={comment}
             onChangeText={setComment}
             mode="outlined"
-            style={{ marginVertical: 10, backgroundColor: theme.colors.background }}
+            style={{ marginBottom: 10, backgroundColor: theme.colors.background }}
             error={emptyComment}
             multiline={true}
-            numberOfLines={4}
+            numberOfLines={2}
           />
         </Animated.View>
 
-        <Text variant="labelLarge" className="text-left mb-3" style={{ color: theme.colors.error }}>{errorEmpty ? errorEmptyMessage : ""}</Text>
-        <Text variant="labelLarge" className="text-left my-1" style={{ color: error ? theme.colors.error : theme.colors.primary }}>{errorMessage}</Text>
+        <Text variant="labelLarge" className="text-left mb-1" style={{ color: theme.colors.error }}>{errorEmpty ? errorEmptyMessage : ""}</Text>
+        <Text variant="labelLarge" className="text-left mb-1" style={{ color: error ? theme.colors.error : theme.colors.primary }}>{errorMessage}</Text>
         <Animated.View
           entering={FlipInYRight.delay(200)}
           exiting={ZoomOut}
